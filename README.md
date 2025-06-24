@@ -19,8 +19,11 @@
 
 本项目使用 MediaPipe 进行手部关键点识别，支持标准手势比对与实时评分反馈。
 
-![手语识别界面](static/images/readme/手势识别1.png)
-![手语识别界面](static/images/readme/手势识别2.png)
+<p align="center">
+  <img src="static/images/readme/手势识别1.png" alt="手势识别示意1" width="45%">
+  &nbsp;
+  <img src="static/images/readme/手势识别2.png" alt="手势识别示意2" width="45%">
+</p>
 
 ## 🔧 技术栈
 
