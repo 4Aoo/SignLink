@@ -1,0 +1,538 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f9f9f9;
+}
+
+
+
+
+/* 导航栏样式 */
+.navbar {
+    margin: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #E6E6FA, #D8BFD8); /* 浅紫色渐变背景 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+/* Logo 样式 */
+.navbar .logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4B0082;
+}
+
+/* 标题 样式 */
+.title-highlight {
+    font-size: 30px;
+    font-weight: bold;
+    color: #fff;
+    background: #7B1FA2;
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+    display: inline-block;
+    transition: transform 0.3s ease-in-out;
+}
+
+.title-highlight::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -6px;
+    width: 60%;
+    height: 5px;
+    background: #BA68C8;
+    border-radius: 10px;
+    transform: translateX(-50%);
+    transition: width 0.3s ease-in-out;
+}
+
+.title-highlight:hover {
+    transform: translateY(-5px) scale(1.05);
+}
+
+.title-highlight:hover::after {
+    width: 80%;
+}
+
+
+/* 中间 样式 */
+.nav-divider {
+    flex-grow: 1;
+    height: 4px;
+    background: linear-gradient(to right, transparent, #BA68C8, transparent);
+    border-radius: 10px;
+    margin: 0 20px;
+    opacity: 0.8;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.nav-divider:hover {
+    opacity: 1;
+}
+
+
+
+
+/* 图标容器样式 */
+.icon-container {
+    display: flex;
+    gap: 30px; /* 增加图标间距 */
+}
+
+.navbaricon i {
+    font-size: 25px;
+    color: #4B0082;
+    animation: gemAnim 1.5s ease infinite;
+}
+
+/* 每个图标的圆形背景 */
+.icon-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #F3E5F5; /* 浅紫色背景 */
+    border-radius: 50%; /* 圆形背景 */
+    width: 80px; /* 圆形宽度 */
+    width: 50px; /* 圆形宽度 */
+    height: 50px; /* 圆形高度 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 图标悬停容器样式 */
+.hover-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hover-card {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px; /* 增大卡片宽度 */
+    background: #F3E5F5;
+    border: 1px solid #D8BFD8;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(180, 136, 255, 0.3);
+    padding: 16px;
+    font-size: 14px;
+    display: none;
+    z-index: 100;
+    text-align: center;
+    max-width: 90vw; /* 防止超出屏幕 */
+    max-height: 80vh;
+    overflow: auto;
+}
+
+/* 调整卡片在屏幕边界时的位置 */
+.hover-container:hover .hover-card {
+    display: block;
+    left: auto;
+    right: 0;
+    transform: translateX(0);
+}
+
+@media (max-width: 400px) {
+    .hover-card {
+        width: 95vw; /* 在小屏幕下占满大部分宽度 */
+    }
+}
+
+/* popout 动画效果 */
+@keyframes popout {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 图标悬停样式 */
+.hover-container i {
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+/* 悬停时图标放大 */
+.hover-container:hover i {
+    transform: scale(1.2);
+}
+
+
+
+/* 进度条样式 */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #8A2BE2;
+    border-radius: 4px;
+}
+
+
+
+
+/* 日历样式 */
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.calendar th,
+.calendar td {
+    width: 36px;
+    /* 适配卡片增大 */
+    height: 36px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.calendar th {
+    color: #4B0082;
+}
+
+.calendar td {
+    background: #F8F0FF;
+    cursor: pointer;
+}
+
+.calendar td:hover {
+    background: #E0B0FF;
+}
+
+/* 高亮当前日期 */
+.current-day {
+    background: #BA68C8 !important;
+    color: white;
+    font-weight: bold;
+    
+}
+
+/* 随机选中以前的日期 */
+.random-day {
+    background: #BA68C8 !important;
+    color: white;
+    font-weight: bold;
+}
+
+
+
+/* 我的积分卡片 - 宝石旋转效果 */
+.gem-spin i {
+    animation: gem-spin 2s infinite linear;
+}
+
+@keyframes gem-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+
+/* 主内容区域 */
+.content {
+    margin: 40px 40px; /* 上下留白 + 水平居中 */
+    background: #F3E5F5;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 16px rgba(180, 136, 255, 0.2);
+    display: flex;
+    flex-direction: row; /* 水平排列子元素 */
+    gap: 20px; /* 子元素间距 */
+    border: 1px solid rgba(180, 136, 255, 0.3);
+    transition: box-shadow 0.3s ease;
+}
+
+/* 侧边栏 - 垂直选项卡按钮区域 */
+.tab {
+    display: flex;
+    flex-direction: column; /* 垂直排列按钮 */
+    width: 30%; /* 设置为左侧栏的二分之一 */
+    margin-right: 20px; /* 为按钮区域添加右间距 */
+}
+
+/* 为选项卡按钮设置样式 */
+.tab button {
+    background-color: inherit;
+    color: black;
+    padding: 16px;
+    border: 1px solid #ccc;
+    width: 100%;
+    border-radius: 20px; /* 改为更圆润的曲线 */
+    cursor: pointer;
+    text-align: left;
+    transition: 0.3s;
+    font-size: 17px;
+    margin-bottom: 8px; /* 为按钮之间添加间距 */
+    background-color: #F1E6FB; /* 浅紫色背景 */
+}
+
+/* 悬停时改变按钮的背景颜色 */
+.tab button:hover {
+    background-color: #D1A7F7; /* 更加明显的浅紫色悬停背景 */
+    border: 1px solid #9C63D1; /* 加强边框颜色 */
+}
+
+/* 为活动的选项卡按钮设置样式 */
+.tab button.active {
+    background-color: #9C63D1; /* 选中状态的浅紫色背景 */
+    color: white; /* 文字变为白色 */
+    border: 1px solid #9C63D1; /* 选中时边框颜色与背景一致 */
+}
+
+/* 选项卡内容区域样式 */
+.tabcontent {
+    display: none; /* 默认隐藏内容 */
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-top: none;
+    margin-top: 10px;
+    border-radius: 8px;
+    width: 100%; /* 让内容区域自适应填充剩余宽度 */
+    flex-grow: 1; /* 让内容区域占据剩余空间 */
+}
+
+/* 显示活动选项卡内容 */
+.tabcontent.active {
+    display: block;
+}
+
+/* 内容区域的背景及边距调整 */
+.sidebar .tabcontent {
+    background-color: #FFF;
+    margin-top: 10px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(180, 136, 255, 0.2);
+}
+
+/* 高亮显示选中内容 */
+.sidebar .tabcontent.active {
+    background-color: #F3E5F5; /* 给选中内容加个浅紫色背景 */
+    box-shadow: 0 4px 8px rgba(156, 99, 209, 0.3);
+}
+
+
+
+
+
+/* 地图 */
+.map-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+}
+
+/* 进度线 */
+.progress-line {
+    width: 4px;
+    height: 50px;
+    background: #777;
+    margin: 10px 0;
+}
+
+/* 已解锁进度线 */
+.unlocked-line {
+    background: linear-gradient(to bottom, #BA68C8, transparent);
+}
+
+/* 关卡点 */
+.map-point {
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* 已解锁关卡 */
+.unlocked {
+    border: 3px solid #BA68C8;
+    color: #4B0082;
+    animation: glow 1.5s infinite alternate;
+}
+
+/* 未解锁关卡 */
+.locked {
+    border: 3px dashed #777;
+    color: #777;
+    filter: grayscale(50%);
+}
+
+/* 动态光晕 */
+@keyframes glow {
+    from {
+        box-shadow: 0 0 10px #BA68C8;
+    }
+    to {
+        box-shadow: 0 0 20px #BA68C8;
+    }
+}
+
+/* 悬停放大效果 */
+.map-point:hover {
+    transform: scale(1.1);
+}
+
+/* 关卡文本 */
+.lesson-name {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+
+
+
+
+
+/* 视频教程 */
+.lesson-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.lesson-card {
+    background: #FFF;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.lesson-card:hover {
+    transform: scale(1.05);
+}
+
+.lesson-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.completed .completed-icon {
+    color: #4CAF50;
+}
+
+.in-progress .progress-icon {
+    color: #FFC107;
+}
+
+.locked .lock-icon {
+    color: #9E9E9E;
+}
+
+.lesson-progress {
+    width: 100%;
+    height: 8px;
+    background: #E0E0E0;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #BA68C8;
+    border-radius: 4px;
+}
+
+.locked-message {
+    text-align: center;
+    font-size: 14px;
+    color: #777;
+}
+
+
+
+
+
+/* 互动 */
+.practice-container {
+    display: flex;
+    gap: 20px;
+}
+
+.practice-card {
+    width: 180px;
+    height: 220px;
+    background: #FFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.practice-card img {
+    width: 80px;
+    height: 80px;
+}
+
+.practice-card .card-front,
+.practice-card .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    font-size: 18px;
+    font-weight: bold;
+    color: #4B0082;
+}
+
+.practice-card.flipped {
+    transform: rotateY(180deg);
+}
+
+
+
+
+

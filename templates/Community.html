@@ -1,0 +1,473 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>手语社区 - 动态</title>
+    <link rel="stylesheet" href="{% static 'css/Community.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_button.css' %}">
+
+    <!-- 最新免费版 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src=https://cdn.tailwindcss.com></script>
+    <script>
+        tailwind.config = {
+            darkMode: `class`
+        }
+    </script>
+
+</head>
+
+<body>
+    <header class="py-6 px-4 md:px-8 flex justify-between items-center">
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+            <a class="text-3xl md:text-4xl font-bold fade-in">SignLink手语通</a>
+            <p class="text-lg md:text-xl opacity-80 fade-in mt-2">连接手语世界，沟通无障碍</p>
+        </div>
+
+        <div class="flex items-center space-x-4 ml-auto">
+            {% if user.is_authenticated %}
+            <div class="user-menu-box-container">
+                <a href="{% url 'my_page' %}" class="user-menu-box-button">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="头像" class="user-menu-box-avatar">
+                    {% else %}
+                    <img src="{% static 'images/default_avatar.png' %}" alt="默认头像" class="user-menu-box-avatar">
+                    {% endif %}
+                    {{ user.username }}
+                </a>
+                <div class="user-menu-box-dropdown">
+                    <a href="{% url 'my_page' %}">进入个人主页</a>
+                    <a href="{% url 'logout' %}">退出登录</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="user-menu-box-login">
+                <i class="fas fa-user"></i> 登录
+            </a>
+            {% endif %}
+        </div>
+    </header>
+    <nav class="sticky top-0 bg-opacity-90 backdrop-blur-sm py-4 px-4 md:px-8 z-50 fade-in"
+        style="background-color:var(--card-bg)">
+        <div class="container mx-auto flex justify-center space-x-8">
+            <a class="nav-link text-lg font-medium" href="{% url 'home' %}" style="color:var(--text-color)">首页</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'sl_classroom' %}"
+                style="color:var(--text-color)">手语教室</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'life_serving' %}"
+                style="color:var(--text-color)">生活服务</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'community' %}"
+                style="color:var(--text-color)">手语社区</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'schedule' %}" style="color:var(--text-color)">日程管理</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'my_page' %}" style="color:var(--text-color)">我的</a>
+        </div>
+    </nav>
+
+    <nav class="navbar">
+        <div class="logo">
+            <span class="title-highlight"><i class="fa-regular fa-hand-spock"></i>手语社区
+        </div></span>
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="搜索动态或用户...">
+            <button class="search-button">🔍</button>
+
+        </div>
+    </nav>
+
+    <h1 class="section-title"></h1>
+    <div class="container">
+        <div class="post-list">
+            <!-- 发布框 -->
+            <form method="post" action="/Community/create_post/" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="post-editor">
+                    <textarea class="editor-input" placeholder="分享你的想法或手语视频..." name="content"></textarea>
+                    <div class="post-actions">
+                        <div class="action-buttons">
+                            <button type="button" onclick="document.getElementById('image').click()" title="添加图片">
+                                📸 图片
+                            </button>
+                            <input type="file" id="image" name="image" accept="image/*" hidden>
+                            <button type="button" onclick="document.getElementById('video').click()" title="添加视频">
+                                🎥 视频
+                            </button>
+                            <input type="file" id="video" name="video" accept="video/*" hidden>
+                            <button type="button" onclick="addTag()" title="添加标签">
+                                🏷️ 标签
+                            </button>
+                            <input type="text" id="tags" name="tags" placeholder="#标签" hidden>
+
+                        </div>
+                        <button type="submit" class="post-button">发布</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- 动态示例 -->
+
+            <!-- <div class="post-card">
+                <div class="post-header">
+                    <img src="{% static 'images/proflie1.png'%}" class="user-avatar" alt="用户头像">
+                    <div>
+                        <h3>手语达人小王</h3>
+                        <p>2小时前 · 📍北京</p>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>今天的手语教学视频来啦！教大家"谢谢"和"不客气"的表达方式 👇</p>
+                </div>
+                <div class="post-media">
+                    <video controls style="max-width: 50%; height: auto;">
+                        <source src="{% static 'images/community_video.mp4'%}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="post-tags">
+                    <span class="tag">#手语教学</span>
+                    <span class="tag">#每日一课</span>
+                </div>
+                
+                <div class="post-actions">
+                    <div class="action-button">❤️ 1.2万</div>
+                    <div class="action-button">💬 845</div>
+                    <div class="action-button">🔄 326</div>
+                </div>
+            </div>
+
+            
+            <div class="post-card">
+                <div class="post-header">
+                    <img src="{% static 'images/profile2.png'%}" class="user-avatar" alt="用户头像">
+                    <div>
+                        <h3>努力生长的小苗</h3>
+                        <p>1天前 · 📍上海</p>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>好开心！今天收到社区的通知，发布了好多适合咱们聋哑人的岗位，感受到了满满爱意~</p>
+                </div>
+                <div class="post-tags">
+                    <span class="tag">#工作岗位</span>
+                    <span class="tag">#心情分享</span>
+                </div>
+                
+                <div class="post-actions">
+                    <div class="action-button">❤️ 3208</div>
+                    <div class="action-button">💬 45</div>
+                    <div class="action-button">🔄 285</div>
+                </div>
+            </div>
+            <div class="post-card">
+                <div class="post-header">
+                    <img src="{% static 'images/profile3.png'%}" class="user-avatar" alt="用户头像">
+                    <div>
+                        <h3>超超家的花</h3>
+                        <p>1天前 · 📍云南</p>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <p>给猫猫草按时浇水的第9天，已经长出3cm高了！感谢好天气</p>
+                </div>
+                <div class="post-tags">
+                    <span class="tag">#种植</span>
+                    <span class="tag">#心情分享</span>
+                </div>
+                
+                <div class="post-actions">
+                    <div class="action-button">❤️ 227</div>
+                    <div class="action-button">💬 85</div>
+                    <div class="action-button">🔄 32</div>
+                </div>
+            </div> -->
+
+
+            {% for post in posts %}
+            <div class="post-card">
+                <!-- 用户信息区 -->
+                <div class="post-header relative">
+                    {% if post.user.avatar %}
+                    <img class="w-10 h-10 rounded-full object-cover" src="{{ post.user.avatar.url }}"
+                        class="user-avatar" alt="用户头像">
+                    {% else %}
+                    <img src="{% static 'images/default_avatar.png' %}" class="user-avatar" alt="默认头像">
+                    {% endif %}
+                    <div>
+                        <h3>{{ post.user.username }}</h3>
+                        <p>{{ post.created_at|timesince }}前</p>
+                    </div>
+
+                    <!-- 关注按钮 -->
+                    {% if request.user != post.user %}
+                    <button
+                        class="absolute top-2 right-2 bg-blue-500 text-white text-sm px-3 py-1 rounded hover:bg-blue-600 follow-btn action-button"
+                        data-user-id="{{ post.user.id }}">
+                        <i class="fas {% if post.is_followed %}fa-user-check{% else %}fa-user-plus{% endif %}"></i>
+                        <span class="follow-text">
+                            {% if post.is_followed %}已关注{% else %}关注{% endif %}
+                        </span>
+                    </button>
+                    {% endif %}
+
+
+
+
+                </div>
+
+                <!-- 帖子内容 -->
+                <div class="post-content">
+                    <p>{{ post.content }}</p>
+                </div>
+
+                <!-- 媒体文件（视频/图片） -->
+                <div class="post-media">
+                    {% if post.image %}
+                    <img src="{{ post.image.url }}" style="max-width: 100%;" alt="帖子图片">
+                    {% endif %}
+                    {% if post.video %}
+                    <video controls style="max-width: 50%; height: auto;">
+                        <source src="{{ post.video.url }}" type="video/mp4">
+                    </video>
+                    {% endif %}
+                </div>
+
+                <!-- 互动按钮 -->
+                <div class="post-actions">
+                    <!-- ❤️ 点赞 -->
+                    <button class="action-button like-btn" data-post-id="{{ post.id }}">
+                        <i class="fa-regular fa-heart"></i> {{ post.like_count }}
+                    </button>
+
+                    <!-- 💬 评论 -->
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-sm text-gray-600">
+                            <i class="fa-regular fa-comment-dots"></i> {{ post.comment_count }}
+                        </div>
+                    </div>
+
+                    <!-- ⭐ 收藏 -->
+                    <button class="action-button favorite-btn" data-post-id="{{ post.id }}">
+                        <i class="fa-regular fa-bookmark"></i> {{ post.favorite_count }}
+                    </button>
+
+                </div>
+
+                <!-- 评论区 -->
+                <div class="post-comments">
+                    <div class="comment-list" id="comment-list-{{ post.id }}">
+                        {% for comment in post.comment_set.all %}
+                        <div class="comment-item">
+                            <strong>{{ comment.user.username }}</strong>: {{ comment.content }}
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <form class="comment-form flex items-center mt-2 gap-2" data-post-id="{{ post.id }}">
+                        <input type="text" name="content"
+                            class="flex-1 px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="写下你的评论..." required>
+                        <button type="submit"
+                            class="px-4 py-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition">发送</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+
+
+        </div>
+
+
+
+
+        <!-- 侧边栏 -->
+        <div class="sidebar">
+            <div class="trending-topics">
+                <h3>热门话题</h3>
+                <div class="topic-item">#无障碍设施指南</div>
+                <div class="topic-item">#手语故事分享</div>
+                <div class="topic-item">#就业信息速递</div>
+                <div class="topic-item">#手语诗歌创作</div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="dashed">
+
+    <footer class="py-8 px-4 md:px-8 text-center fade-in" style="animation-delay:1.2s">
+        <div class="mx-auto max-w-4xl"> <!-- 典型内容宽度 -->
+            <div class="flex flex-col items-center justify-center">
+                <div class="mb-4 text-lg font-medium">作者: 赵一芬 徐媛铃 李思妍</div>
+                <p class="text-sm opacity-70">© 2025 SignLink手语通. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const isLoggedIn = {{ user.is_authenticated|yesno:"true,false"|safe }};
+
+        // 获取 CSRF Token 辅助函数
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // 点赞按钮
+        document.querySelectorAll('.like-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                if (!isLoggedIn) {
+                    alert("请先登录再点赞！");
+                    window.location.href = "/users/login/";
+                    return;
+                }
+
+                const postId = button.getAttribute('data-post-id');
+                fetch(`/Community/like_post/${postId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            button.innerHTML = `❤️ ${data.likes}`;
+                            button.disabled = true;
+                        } else {
+                            alert(data.message || '您已经点过赞了');
+                        }
+                    });
+            });
+        });
+
+        // 评论提交
+        document.querySelectorAll('.comment-form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                if (!isLoggedIn) {
+                    alert("请先登录后再发表评论！");
+                    window.location.href = "/users/login/";
+                    return;
+                }
+
+                const postId = form.getAttribute('data-post-id');
+                const input = form.querySelector('input[name="content"]');
+                const content = input.value.trim();
+
+                if (!content) return;
+
+                fetch(`/Community/comment_post/${postId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `content=${encodeURIComponent(content)}`,
+                    credentials: 'same-origin',
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            const list = document.getElementById(`comment-list-${postId}`);
+                            const newComment = document.createElement('div');
+                            newComment.className = 'comment-item';
+                            newComment.innerHTML = `<strong>${data.username}</strong>: ${data.content}`;
+                            list.appendChild(newComment);
+                            input.value = '';
+                        } else {
+                            alert(data.message || '评论失败');
+                        }
+                    });
+            });
+        });
+
+        // 收藏按钮
+        document.querySelectorAll('.favorite-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                if (!isLoggedIn) {
+                    alert("请先登录后再收藏！");
+                    window.location.href = "/users/login/";
+                    return;
+                }
+
+                const postId = button.getAttribute('data-post-id');
+                fetch(`/Community/favorite_post/${postId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            button.innerHTML = `⭐ ${data.favorites}`;
+                            button.disabled = true;
+                        } else {
+                            alert(data.message || '您已经收藏过了');
+                        }
+                    });
+            });
+        });
+
+        // 关注按钮
+        document.querySelectorAll('.follow-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                if (!isLoggedIn) {
+                    alert("请先登录后再关注用户！");
+                    window.location.href = "/users/login/";
+                    return;
+                }
+
+                const userId = button.getAttribute('data-user-id');
+                fetch(`/Community/toggle_follow/${userId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'same-origin',
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            const icon = button.querySelector('i');
+                            const label = button.querySelector('.follow-text');
+
+                            if (data.following) {
+                                icon.classList.remove('fa-user-plus');
+                                icon.classList.add('fa-user-check');
+                                label.textContent = '已关注';
+                            } else {
+                                icon.classList.remove('fa-user-check');
+                                icon.classList.add('fa-user-plus');
+                                label.textContent = '关注';
+                            }
+                        } else {
+                            alert(data.message);
+                        }
+                    });
+            });
+        });
+
+
+
+    </script>
+
+</body>
+
+</html>

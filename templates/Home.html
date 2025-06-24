@@ -1,0 +1,691 @@
+{% load static %}
+<!doctype html>
+<html lang=zh-CN>
+
+<head>
+    <meta charset=UTF-8>
+    <title>SignLink手语通</title>
+
+    <link rel="stylesheet" href="{% static 'css/login_button.css' %}">
+
+    <script src=https://cdn.tailwindcss.com></script>
+    <script>
+        tailwind.config = {
+            darkMode: `class`
+        }
+    </script>
+    <link href=https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css rel=stylesheet>
+    <style>
+        /* 新增幻灯片样式 */
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            margin: 2rem 0;
+        }
+
+        .slider-track {
+            display: flex;
+            width: 300%;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .slider-item {
+            flex: 0 0 33.33333%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider-item img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            transform: scale(1);
+            transition: transform 10s linear;
+        }
+
+        .slider-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .slider-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+            color: white;
+        }
+
+        .slider-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 1rem;
+        }
+
+        .slider-nav {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .slider-nav:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .slider-dot.active {
+            background: var(--primary);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .slider-item img {
+                height: 300px;
+            }
+
+            .slider-nav {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        @import "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap";
+
+        :root {
+            --primary: #8d6a95;
+            --primary-light: #cebbf3;
+            --dark-bg: #1a1a1a;
+            --dark-card: #2a2a2a;
+            --light-bg: #f9f9f9;
+            --light-card: #fff
+        }
+
+        @import "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap";
+
+        :root {
+            --primary: #8d6a95;
+            --primary-light: #cebbf3;
+            --dark-bg: #1a1a1a;
+            --dark-card: #2a2a2a;
+            --light-bg: #f9f9f9;
+            --light-card: #fff
+        }
+
+        .dark {
+            --bg-color: var(--dark-bg);
+            --card-bg: var(--dark-card);
+            --text-color: #fff;
+            --border-color: #692479
+        }
+
+        .light {
+            --bg-color: var(--light-bg);
+            --card-bg: var(--light-card);
+            --text-color: hsl(301, 89%, 21%);
+            --border-color: #e5e5e5
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Noto Sans SC, sans-serif;
+            transition: background-color .3s, color .3s;
+            padding: 2rem 5%;
+            /* 修改为百分比响应式边距 */
+            max-width: 1440px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        /* 新增盒模型设置[10](@ref) */
+        @media (min-width: 1600px) {
+            body {
+                padding: 2rem 8%;
+                /* 大屏幕增加边距 */
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem;
+                /* 移动端统一边距 */
+            }
+        }
+
+        /* 新增内容容器边距 */
+        .main-container {
+            padding: 0 2rem;
+            /* 内容区二级边距 */
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+            margin: 1rem 0;
+            /* 新增卡片外边距 */
+            padding: 1.5rem;
+            /* 新增卡片内边距[2](@ref) */
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px #0000001a
+        }
+
+        .btn {
+            transition: transform .2s, background-color .2s
+        }
+
+        .btn:hover {
+            transform: scale(1.05)
+        }
+
+        .fade-in {
+            animation: .8s ease-in fadeIn
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .nav-link {
+            position: relative
+        }
+
+        .nav-link:after {
+            content: "";
+            background-color: var(--primary);
+            width: 0;
+            height: 2px;
+            transition: width .3s;
+            position: absolute;
+            bottom: -2px;
+            left: 0
+        }
+
+        .nav-link:hover:after,
+        .nav-link.active:after {
+            width: 100%
+        }
+
+        .image-slide {
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden
+        }
+
+        .image-slide img {
+            transition: transform 10s ease-in-out
+        }
+
+        .image-slide:hover img {
+            transform: scale(1.05)
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            border-radius: 50%;
+            padding: 10px;
+            transition: background-color .3s
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--primary-light)
+        }
+
+        /* 添加在style中 */
+        .user-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-width: 160px;
+        }
+
+        .user-menu.show {
+            display: block;
+        }
+    </style>
+    <script src="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+</head>
+
+
+<body>
+    <header class="py-6 px-4 md:px-8 flex justify-between items-center">
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+            <a class="text-3xl md:text-4xl font-bold fade-in">SignLink手语通</a>
+            <p class="text-lg md:text-xl opacity-80 fade-in mt-2">连接手语世界，沟通无障碍</p>
+        </div>
+
+        <div class="flex items-center space-x-4 ml-auto">
+            {% if user.is_authenticated %}
+            <div class="user-menu-box-container">
+                <a href="{% url 'my_page' %}" class="user-menu-box-button">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="头像" class="user-menu-box-avatar">
+                    {% else %}
+                    <img src="{% static 'images/default_avatar.png' %}" alt="默认头像" class="user-menu-box-avatar">
+                    {% endif %}
+                    {{ user.username }}
+                </a>
+                <div class="user-menu-box-dropdown">
+                    <a href="{% url 'my_page' %}">进入个人主页</a>
+                    <a href="{% url 'logout' %}">退出登录</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="user-menu-box-login">
+                <i class="fas fa-user"></i> 登录
+            </a>
+            {% endif %}
+        </div>
+    </header>
+    <nav class="sticky top-0 bg-opacity-90 backdrop-blur-sm py-4 px-4 md:px-8 z-50 fade-in"
+        style="background-color:var(--card-bg); border-bottom: 1px solid var(--border-color);">
+        <div class="container mx-auto flex justify-center space-x-8">
+            <a class="nav-link text-lg font-medium" href="{% url 'home' %}" style="color:var(--text-color)">首页</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'sl_classroom' %}"
+                style="color:var(--text-color)">手语教室</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'life_serving' %}"
+                style="color:var(--text-color)">生活服务</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'community' %}"
+                style="color:var(--text-color)">手语社区</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'schedule' %}" style="color:var(--text-color)">日程管理</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'my_page' %}" style="color:var(--text-color)">我的</a>
+        </div>
+    </nav>
+    <!-- 修改后的幻灯片部分 -->
+    <section class="mb-12 fade-in" style="animation-delay:.2s">
+        <div class="slider-container">
+            <div class="slider-track" id="sliderTrack">
+                <!-- 幻灯片项1 -->
+                <div class="slider-item">
+                    <img src="{% static 'images/1.png' %}" alt="手语交流">
+                    <div class="slider-caption">
+                        <h3 class="text-2xl font-bold mb-2">手语交流社区</h3>
+                        <p>与全球手语使用者实时互动</p>
+                    </div>
+                </div>
+
+                <!-- 幻灯片项2 -->
+                <div class="slider-item">
+                    <img src="{% static 'images/2.jpg' %}" alt="手语教学">
+                    <div class="slider-caption">
+                        <h3 class="text-2xl font-bold mb-2">专业课程体系</h3>
+                        <p>系统化学习手语知识</p>
+                    </div>
+                </div>
+
+                <!-- 幻灯片项3 -->
+                <div class="slider-item">
+                    <img src="{% static 'images/3.jpg' %}">
+                    <div class="slider-caption">
+                        <h3 class="text-2xl font-bold mb-2">生活服务支持</h3>
+                        <p>一站式解决日常需求</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 导航控件 -->
+            <div class="slider-control">
+                <div class="slider-nav" onclick="prevSlide()">
+                    <i class="fas fa-chevron-left text-white"></i>
+                </div>
+                <div class="slider-nav" onclick="nextSlide()">
+                    <i class="fas fa-chevron-right text-white"></i>
+                </div>
+            </div>
+
+            <!-- 指示器 -->
+            <div class="slider-dots" id="sliderDots"></div>
+        </div>
+    </section>
+    <section class="mb-16 fade-in" id=hand-sign style=animation-delay:.4s>
+        <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+            <i class="fas fa-sign-language mr-3 text-purple-600"></i>
+            手语教室
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="card rounded-xl p-6 hover:shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mr-4">
+                        <i class="fas fa-book text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold">基础手语课程</h3>
+                </div>
+                <p class=mb-4>从零开始学习手语，掌握日常交流必备词汇和语法。
+                <div class="flex justify-end">
+                    <a class="btn text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium"
+                        href="{% url 'sl_classroom' %}" style="color:var(--text-color)">开始学习</a>
+                </div>
+            </div>
+            <div class="card rounded-xl p-6 hover:shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mr-4">
+                        <i class="fas fa-video text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold">视频教学</h3>
+                </div>
+                <p class=mb-4>通过生动的视频教程，直观学习手语表达方式。
+                <div class="flex justify-end">
+                    <a class="btn text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium"
+                        href="{% url 'sl_classroom' %}" style="color:var(--text-color)">观看视频</a>
+                </div>
+            </div>
+            <div class="card rounded-xl p-6 hover:shadow-lg">
+                <div class="flex items-center mb-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mr-4">
+                        <i class="fas fa-comments text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold">互动练习</h3>
+                </div>
+                <p class=mb-4>通过互动练习巩固所学知识，提高手语应用能力。
+                <div class="flex justify-end">
+                    <a class="btn text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-300 font-medium"
+                        href="{% url 'sl_classroom' %}" style="color:var(--text-color)">开始练习</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="mb-16 fade-in" id=life-service style=animation-delay:.6s>
+        <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+            <i class="fas fa-life-ring mr-3 text-purple-600"></i>
+            生活服务
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="card rounded-xl p-6 hover:shadow-lg">
+                <div
+                    class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mb-4">
+                    <i class="fas fa-users text-purple-600 dark:text-purple-400 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">社交活动</h3>
+                <p>发现附近的聋哑人士聚会和手语交流活动
+            </div>
+            <div class="card rounded-xl p-6 hover:shadow-lg">
+                <div
+                    class="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mb-4">
+                    <i class="fas fa-map-marker-alt text-green-600 dark:text-green-400 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">无障碍设施</h3>
+                <p>获取无障碍设施的地点信息和路线指引。
+            </div>
+            <div class="card rounded-xl p-6 hover:shadow-lg">
+                <div
+                    class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center mb-4">
+                    <i class="fas fa-gift text-orange-600 dark:text-orange-400 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">好物推荐</h3>
+                <p>精选适合聋哑人士的生活辅助工具和实用商品
+            </div>
+            <div class="card rounded-xl p-6 hover:shadow-lg">
+                <div
+                    class="w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center mb-4">
+                    <i class="fas fa-shopping-cart text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">就业信息</h3>
+                <p>获取聋哑人士最新岗位信息和在线找工作支持。
+            </div>
+        </div>
+    </section>
+    <section class="mb-16 fade-in" id=sign-community style=animation-delay:.8s>
+        <h2 class="text-2xl md:text-3xl font-bold mb-6 flex items-center">
+            <i class="fas fa-users mr-3 text-purple-600"></i>
+            手语社区
+        </h2>
+        <div class="card rounded-xl p-6 mb-6">
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/3 mb-4 md:mb-0 md:pr-6">
+                    <h3 class="text-xl font-semibold mb-3">最新活动</h3>
+                    <ul class=space-y-2>
+                        <li class="flex items-center">
+                            <i class="fas fa-calendar-check text-purple-600 dark:text-purple-400 mr-2"></i>
+                            <span>手语交流会 - 下周日</span>
+                        <li class="flex items-center">
+                            <i class="fas fa-calendar-check text-purple-600 dark:text-purple-400 mr-2"></i>
+                            <span>手语工作坊 - 本月末</span>
+                        <li class="flex items-center">
+                            <i class="fas fa-calendar-check text-purple-600 dark:text-purple-400 mr-2"></i>
+                            <span>手语表演 - 下月</span>
+                    </ul>
+                </div>
+                <div class="md:w-2/3 md:border-l md:pl-6 border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xl font-semibold mb-3">社区动态</h3>
+                    <div class=space-y-4>
+                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+                            <p class=mb-2>
+                                <span class=font-medium>用户A:</span>
+                                刚学了几个新的手语词汇，感觉越来越自信了！
+                            <p class="text-sm text-gray-600 dark:text-gray-400">— 前天
+                        </div>
+                        <div class="p-4 rounded-lg bg-gray-50 dark:bg-gray-800">
+                            <p class=mb-2>
+                                <span class=font-medium>用户B:</span>
+                                明天的手语交流会见！期待和大家见面。
+                            <p class="text-sm text-gray-600 dark:text-gray-400">— 昨天
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card rounded-xl p-6">
+            <h3 class="text-xl font-semibold mb-4">加入我们</h3>
+            <p class=mb-4>成为SignLink社区的一员，与其他手语学习者和使用者交流互动，分享经验，共同进步。
+            <div class="flex justify-center">
+                <a class="btn bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium"
+                   href="{% url 'community' %}"
+                style="color:var(--text-color)">立即加入</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 px-4 md:px-8 text-center fade-in" style=animation-delay:1.2s>
+        <div class="flex flex-col items-center">
+            <div class="mb-4 text-lg font-medium">作者: 赵一芬 徐媛铃 李思妍</div>
+            <p class="text-sm opacity-70">© 2025 SignLink手语通. 保留所有权利.
+        </div>
+    </footer>
+
+
+    <script>
+        // 幻灯片控制逻辑
+        let currentSlide = 0;
+        const slideCount = 3;
+        const sliderTrack = document.getElementById('sliderTrack');
+        const sliderDots = document.getElementById('sliderDots');
+        let autoPlayTimer;
+
+        // 初始化指示器
+        for (let i = 0; i < slideCount; i++) {
+            const dot = document.createElement('div');
+            dot.className = `slider-dot ${i === 0 ? 'active' : ''}`;
+            dot.addEventListener('click', () => goToSlide(i));
+            sliderDots.appendChild(dot);
+        }
+
+        // 切换幻灯片
+        function goToSlide(index) {
+            currentSlide = (index + slideCount) % slideCount;
+            sliderTrack.style.transform = `translateX(-${currentSlide * 33.333}%)`;
+            updateDots();
+        }
+
+        // 更新指示器状态
+        function updateDots() {
+            document.querySelectorAll('.slider-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        // 下一张
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+            resetAutoPlay();
+        }
+
+        // 上一张
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+            resetAutoPlay();
+        }
+
+        // 自动播放控制
+        function startAutoPlay() {
+            autoPlayTimer = setInterval(nextSlide, 5000);
+        }
+
+        function resetAutoPlay() {
+            clearInterval(autoPlayTimer);
+            startAutoPlay();
+        }
+
+        // 悬停控制
+        document.querySelector('.slider-container').addEventListener('mouseenter', () => {
+            clearInterval(autoPlayTimer);
+        });
+
+        document.querySelector('.slider-container').addEventListener('mouseleave', startAutoPlay);
+
+        // 初始化自动播放
+        startAutoPlay();
+
+        const themeToggle = document.getElementById(`themeToggle`);
+        const body = document.body;
+        if (window.matchMedia && window.matchMedia(`(prefers-color-scheme: dark)`).matches) {
+            body.classList.remove(`light`);
+            body.classList.add(`dark`)
+        }
+        ; themeToggle.addEventListener(`click`, () => {
+            let b = `light`
+                , a = `dark`;
+            if (body.classList.contains(a)) {
+                body.classList.remove(a);
+                body.classList.add(b)
+            } else {
+                body.classList.remove(b);
+                body.classList.add(a)
+            }
+        }
+        );
+        // 示例登录状态检测
+        const authState = {
+            isLoggedIn: false, // 实际应从cookie/localStorage获取
+            username: "测试用户"
+        }
+
+        const renderAuth = () => {
+            const authHTML = authState.isLoggedIn
+                ? `<div class="flex items-center space-x-2">
+                        <i class="fa-regular fa-user text-xl"></i>
+                        <span>${authState.username}</span>
+                    </div>`
+                : `<a href="{% url 'login' %}" class="flex items-center space-x-2 hover:text-[var(--primary)] transition-colors">
+                        <i class="fa-regular fa-user text-xl"></i>
+                        <span class="text-lg">登录</span>
+                    </a>`;
+
+            document.querySelector('header').lastElementChild.innerHTML = authHTML;
+        }
+
+        // 初始化执行
+        renderAuth();
+        const navLinks = document.querySelectorAll(`.nav-link`);
+        const sections = document.querySelectorAll(`section[id]`);
+        window.addEventListener(`scroll`, () => {
+            let b = `active`;
+            let a = ``;
+            sections.forEach(b => {
+                const c = b.offsetTop;
+                const d = b.clientHeight;
+                if (pageYOffset >= c - 200) {
+                    a = b.getAttribute(`id`)
+                }
+            }
+            );
+            navLinks.forEach(c => {
+                c.classList.remove(b);
+                if (c.getAttribute(`href`).substring(1) === a) {
+                    c.classList.add(b)
+                }
+            }
+            )
+        }
+        );
+        document.addEventListener(`DOMContentLoaded`, () => {
+            const a = document.querySelectorAll(`.fade-in`);
+            const b = new IntersectionObserver(a => {
+                a.forEach(a => {
+                    if (a.isIntersecting) {
+                        a.target.style.opacity = 1;
+                        a.target.style.transform = `translateY(0)`
+                    }
+                }
+                )
+            }
+                , {
+                    threshold: 0.1
+                });
+            a.forEach(a => {
+                a.style.opacity = 0;
+                a.style.transform = `translateY(20px)`;
+                a.style.transition = `opacity 0.5s ease, transform 0.5s ease`;
+                b.observe(a)
+            }
+            )
+        }
+        )
+    </script>
+</body>
+
+</html>

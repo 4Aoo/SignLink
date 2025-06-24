@@ -1,0 +1,468 @@
+<!doctypehtml>
+<html lang=zh-CN>
+    <meta charset=UTF-8>
+    <meta content=width= device-width,initial-scale=1.0 name=viewport>
+    <title>聊天页面</title>
+    <script src=https://cdn.tailwindcss.com/3.4.16></script>
+    <script>
+        tailwind.config = {
+            darkMode: `class`
+        }
+    </script>
+    <link href=https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css rel=stylesheet>
+    <style>
+        @import "https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap";:root {
+            --primary-purple: #6a1b9a;
+            --secondary-purple: #9c27b0;
+            --light-purple: #d1c4e9;
+            --dark-purple: #4a148c;
+            --background: #f3e5f5;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --card-bg: #fff;
+            --card-border: #eee
+        }
+
+        .dark {
+            --primary-purple: #9c27b0;
+            --secondary-purple: #6a1b9a;
+            --light-purple: #4a148c;
+            --dark-purple: #6a1b9a;
+            --background: #121212;
+            --text-primary: #fff;
+            --text-secondary: #ccc;
+            --card-bg: #1e1e1e;
+            --card-border: #2a2a2a
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-primary);
+            font-family: Noto Sans SC,sans-serif;
+            transition: all .3s
+        }
+        .chat-container {
+            height: 100vh;
+            display: flex
+        }
+
+        .contacts-sidebar {
+            background-color: var(--primary-purple);
+            color: #fff;
+            width: 250px;
+            transition: all .3s
+        }
+
+        .chat-main {
+            flex: 1;
+            overflow-y: auto
+        }
+
+        .profile-sidebar {
+            background-color: var(--card-bg);
+            border-left: 1px solid var(--card-border);
+            width: 250px
+        }
+
+        .message {
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 12px;
+            transition: all .3s
+        }
+
+        .message.sent {
+            background-color: var(--light-purple);
+            align-self: flex-end
+        }
+
+        .message.received {
+            background-color: #f5f5f5;
+            align-self: flex-start
+        }
+
+        .message img,.message video {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto
+        }
+
+        .emoji-picker {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px #0000001a;
+            max-height: 200px;
+            padding: 10px;
+            overflow-y: auto
+        }
+
+        .emoji-category {
+            margin-bottom: 10px
+        }
+
+        .emoji-category-title {
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+            font-size: 14px
+        }
+
+        .emoji-grid {
+            grid-template-columns: repeat(7,1fr);
+            gap: 5px;
+            display: grid
+        }
+
+        .emoji-item {
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform .2s
+        }
+
+        .emoji-item:hover {
+            transform: scale(1.2)
+        }
+
+        .upload-button {
+            cursor: pointer;
+            background-color: var(--light-purple);
+            color: var(--primary-purple);
+            border-radius: 50%;
+            justify-content: center;
+            align-items: center;
+            width: 36px;
+            height: 36px;
+            margin-right: 10px;
+            font-size: 18px;
+            transition: all .3s;
+            display: flex
+        }
+
+        .upload-button:hover {
+            background-color: var(--secondary-purple);
+            color: #fff
+        }
+
+        .contact {
+            border-radius: 8px;
+            padding: 12px;
+            transition: all .3s
+        }
+
+        .contact:hover {
+            background-color: var(--secondary-purple)
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            padding: 15px;
+            transition: all .3s
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px #0000001a
+        }
+
+        .btn {
+            background-color: var(--primary-purple);
+            color: #fff;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all .3s
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-purple);
+            transform: scale(1.05)
+        }
+
+        .fade-in {
+            animation: .5s ease-in fadeIn
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background)
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-purple);
+            border-radius: 4px
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-purple)
+        }
+    </style>
+    <body class=min-h-screen>
+        <header class="py-6 px-4 md:px-8 text-center">
+            <a class="text-3xl md:text-4xl font-bold mb-4 fade-in" href=主页面.html>SignLink手语通</a>
+            <p class="text-lg md:text-xl opacity-80 fade-in mt-4">连接手语世界，沟通无障碍
+        </header>   
+        <div class="min-h-screen flex flex-col">
+            <nav class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-center h-16">
+                        <div class="flex items-center">
+                            <div class="container mx-auto flex justify-center space-x-8">
+                                <a class="nav-link text-lg font-medium" href=SLClassroom.html style=color:var(--text-color)>手语教室</a>
+                                <a class="nav-link text-lg font-medium" href=LifeServing.html style=color:var(--text-color)>生活服务</a>
+                                <a class="nav-link text-lg font-medium" href=Community.html style=color:var(--text-color)>手语社区</a>
+                                <a class="nav-link text-lg font-medium" href=聊天页面.html style=color:var(--text-color)>聊天</a>
+                                <a class="nav-link text-lg font-medium" href=myPage.html style=color:var(--text-color)>我的</a>
+                                <button class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none" id=theme-toggle>
+                                <i class="fas fa-moon dark:hidden"></i>
+                                <i class="fas fa-sun hidden dark:block text-yellow-300"></i>
+                            </button>
+                            </div>
+                        </div>    
+                    </div>
+                </div>
+            </nav>
+        <div>
+        <div class="chat-container flex">
+            <div class="contacts-sidebar shadow-md">
+                <h2 class="text-xl font-bold p-4 border-b border-opacity-30 border-white">联系人</h2>
+                <ul class="p-2 space-y-2">
+                    <li class="contact flex items-center p-2 cursor-pointer" onclick=switchChat(1)>
+                        <img alt="张军的头像" class="w-10 h-10 rounded-full mr-3" src=images\OIP-C.jpg>
+                        <span>张军</span>
+                    <li class="contact flex items-center p-2 cursor-pointer" onclick=switchChat(2)>
+                        <img alt="王暖暖的头像" class="w-10 h-10 rounded-full mr-3" src=images\聊天2.jpg>
+                        <span>王暖暖</span>
+                </ul>
+            </div>
+            <div class="chat-main p-4">
+                <div class="chat-header bg-opacity-20 bg-white p-3 rounded-lg mb-4">
+                    <div class="flex items-center">
+                        <img alt=聊天对象头像 class="w-12 h-12 rounded-full mr-3" src=images\OIP-C.jpg id=chatAvatar>
+                        <div>
+                            <h3 class="font-bold text-lg" id=chatName>张军</h3>
+                            <p class="text-sm opacity-75" id=chatStatus>在线
+                        </div>
+                    </div>
+                </div>
+                <div class="messages p-3" id=messages>
+                    <div class="message received">
+                        <p>你好！今天天气不错啊。
+                    </div>
+                    <div class="message sent">
+                        <p>是啊，准备出去走走。
+                    </div>
+                    <div class="message received">
+                        <p>有什么计划吗？
+                    </div>
+                    <div class="message sent">
+                        <p>打算去公园散步，拍点照片。
+                    </div>
+                    <div class="message received">
+                        <p>好的，我也去公园看看。
+                    </div>
+                </div>
+                <div class="input-area flex items-center mt-4">
+                    <input class="flex-1 px-4 py-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary-purple" placeholder=输入消息... id=input type=text>
+                    <label class=upload-button for=imageUpload>
+                        <i class="fas fa-image"></i>
+                    </label>
+                    <input accept="image/*" id=imageUpload style=display:none type=file>
+                    <label class=upload-button for=videoUpload>
+                        <i class="fas fa-video"></i>
+                    </label>
+                    <input accept="video/*" id=videoUpload style=display:none type=file>
+                    <button class=btn onclick=sendMessage()>
+                        <i class="fas fa-paper-plane mr-1"></i>
+                        发送
+                    </button>
+                    <button class="btn ml-2" onclick=showEmojis()>
+                        <i class="far fa-smile mr-1"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="profile-sidebar shadow-md">
+                <div class="flex justify-center mb-4">
+                    <img alt=个人资料头像 class="w-20 h-20 rounded-full border-4 border-white" src=images\OIP-C.jpg id=profileAvatar>
+                </div>
+                <h3 class="text-center text-xl font-bold mb-2" id=profileName>张军</h3>
+                <div class="card p-3 mb-4">
+                    <p class="text-sm mb-1">
+                        <i class="fas fa-venus-mars mr-2 text-primary-purple"></i>
+                        性别：<span id=profileGender>男</span>
+                    <p class="text-sm mb-1">
+                        <i class="fas fa-map-marker-alt mr-2 text-primary-purple"></i>
+                        属地：<span id=profileLocation>北京</span>
+                    <p class="text-sm mb-1">
+                        <i class="fas fa-quote-left mr-2 text-primary-purple"></i>
+                        个性签名：<span id=profileBio>Hello World!</span>
+                </div>
+                <div class="emoji-picker fixed bottom-16 right-16 z-50" id=emojiPicker>
+                    <div class=emoji-category>
+                        <div class=emoji-category-title>表情符号</div>
+                        <div class=emoji-grid>
+                            <span class=emoji-item>😊</span>
+                            <span class=emoji-item>😂</span>
+                            <span class=emoji-item>🤔</span>
+                            <span class=emoji-item>😢</span>
+                            <span class=emoji-item>😠</span>
+                            <span class=emoji-item>😲</span>
+                            <span class=emoji-item>😄</span>
+                            <span class=emoji-item>😊</span>
+                            <span class=emoji-item>😂</span>
+                            <span class=emoji-item>🤔</span>
+                            <span class=emoji-item>😢</span>
+                            <span class=emoji-item>😠</span>
+                            <span class=emoji-item>😲</span>
+                            <span class=emoji-item>😄</span>
+                            <span class=emoji-item>😊</span>
+                            <span class=emoji-item>😂</span>
+                            <span class=emoji-item>🤔</span>
+                            <span class=emoji-item>😢</span>
+                            <span class=emoji-item>😠</span>
+                            <span class=emoji-item>😲</span>
+                            <span class=emoji-item>😄</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            var contacts = [{
+                id: 1,
+                name: `张军`,
+                avatar: `images/OIP-C.jpg`,
+                gender: `男`,
+                location: `北京`,
+                bio: `Hello World!`
+            }, {
+                id: 2,
+                name: `王暖暖`,
+                avatar: `images/聊天2.jpg`,
+                gender: `女`,
+                location: `上海`,
+                bio: `Nice to meet you!`
+            }];
+            var currentContactId = 1;
+            var switchChat = (a => {
+                currentContactId = a;
+                document.getElementById(`messages`).innerHTML = ``;
+                const b = contacts.find(c => c.id === a);
+                document.getElementById(`chatAvatar`).src = b.avatar;
+                document.getElementById(`chatName`).innerText = b.name;
+                document.getElementById(`profileAvatar`).src = b.avatar;
+                document.getElementById(`profileName`).innerText = b.name;
+                document.getElementById(`profileGender`).innerText = ` ${b.gender}`;
+                document.getElementById(`profileLocation`).innerText = ` ${b.location}`;
+                document.getElementById(`profileBio`).innerText = ` ${b.bio}`
+            }
+            );
+            var sendMessage = ( () => {
+                const a = document.getElementById(`input`).value.trim();
+                if (a && currentContactId) {
+                    const b = document.createElement(`div`);
+                    b.className = `message sent`;
+                    b.innerHTML = a;
+                    document.getElementById(`messages`).appendChild(b);
+                    document.getElementById(`input`).value = ``;
+                    document.getElementById(`messages`).scrollTop = document.getElementById(`messages`).scrollHeight
+                }
+            }
+            );
+            var uploadImage = (a => {
+                const b = a.target.files[0];
+                if (b) {
+                    const c = new FileReader();
+                    c.onload = (a => {
+                        const d = a.target.result;
+                        sendImage(d)
+                    }
+                    );
+                    c.readAsDataURL(b)
+                }
+            }
+            );
+            var uploadVideo = (a => {
+                const b = a.target.files[0];
+                if (b) {
+                    const c = new FileReader();
+                    c.onload = (a => {
+                        const d = a.target.result;
+                        sendVideo(d)
+                    }
+                    );
+                    c.readAsDataURL(b)
+                }
+            }
+            );
+            var sendImage = (a => {
+                if (currentContactId) {
+                    const b = document.createElement(`div`);
+                    b.className = `message sent`;
+                    const c = document.createElement(`img`);
+                    c.src = a;
+                    c.style.maxWidth = `200px`;
+                    c.style.borderRadius = `8px`;
+                    b.appendChild(c);
+                    document.getElementById(`messages`).appendChild(b);
+                    document.getElementById(`messages`).scrollTop = document.getElementById(`messages`).scrollHeight
+                }
+            }
+            );
+            var sendVideo = (a => {
+                if (currentContactId) {
+                    const b = document.createElement(`div`);
+                    b.className = `message sent`;
+                    const c = document.createElement(`video`);
+                    c.src = a;
+                    c.controls = !0;
+                    c.style.maxWidth = `200px`;
+                    c.style.borderRadius = `8px`;
+                    b.appendChild(c);
+                    document.getElementById(`messages`).appendChild(b);
+                    document.getElementById(`messages`).scrollTop = document.getElementById(`messages`).scrollHeight
+                }
+            }
+            );
+            var showEmojis = ( () => {
+                const a = document.getElementById(`emojiPicker`);
+                a.style.display = a.style.display === `none` ? `block` : `none`
+            }
+            );
+            document.querySelectorAll(`.emoji-item`).forEach(a => {
+                a.addEventListener(`click`, () => {
+                    const b = a.textContent;
+                    document.getElementById(`input`).value += b;
+                    document.getElementById(`emojiPicker`).style.display = `none`
+                }
+                )
+            }
+            );
+            document.addEventListener(`DOMContentLoaded`, ( () => {
+                const a = document.querySelectorAll(`.message`);
+                a.forEach( (a, b) => {
+                    setTimeout( () => {
+                        a.classList.add(`fade-in`)
+                    }
+                    , b * 100)
+                }
+                )
+            }
+            ))
+        </script>

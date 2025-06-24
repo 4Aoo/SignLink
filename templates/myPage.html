@@ -1,0 +1,442 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的</title>
+
+    <link rel="stylesheet" href="{% static 'css/myPage.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_button.css' %}">
+    <script src="{% static 'js/myPage.js' %}"></script>
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src=https://cdn.tailwindcss.com></script>
+
+</head>
+
+<body style="background-image: url('{{ profile.page_background.url }}'); background-size: cover;">
+    <!-- 导航栏 -->
+    <header class="py-6 px-4 md:px-8 flex justify-between items-center bg-white bg-opacity-70">
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+            <a class="text-3xl md:text-4xl font-bold fade-in">SignLink手语通</a>
+            <p class="text-lg md:text-xl opacity-80 fade-in mt-2">连接手语世界，沟通无障碍</p>
+        </div>
+
+        <div class="flex items-center space-x-4 ml-auto">
+            {% if user.is_authenticated %}
+            <div class="user-menu-box-container">
+                <a href="{% url 'my_page' %}" class="user-menu-box-button">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="头像" class="user-menu-box-avatar">
+                    {% else %}
+                    <img src="{% static 'images/default_avatar.png' %}" alt="默认头像" class="user-menu-box-avatar">
+                    {% endif %}
+                    {{ user.username }}
+                </a>
+                <div class="user-menu-box-dropdown">
+                    <a href="{% url 'my_page' %}">进入个人主页</a>
+                    <a href="{% url 'logout' %}">退出登录</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="user-menu-box-login">
+                <i class="fas fa-user"></i> 登录
+            </a>
+            {% endif %}
+        </div>
+    </header>
+    <nav class="sticky top-0 bg-white bg-opacity-90 backdrop-blur-sm py-4 px-4 md:px-8 z-50 fade-in"
+        style="border-bottom: 1px solid var(--border-color);">
+        <div class="container mx-auto flex justify-center space-x-8">
+            <a class="nav-link text-lg font-medium" href="{% url 'home' %}" style="color:var(--text-color)">首页</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'sl_classroom' %}"
+                style="color:var(--text-color)">手语教室</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'life_serving' %}"
+                style="color:var(--text-color)">生活服务</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'community' %}"
+                style="color:var(--text-color)">手语社区</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'schedule' %}" style="color:var(--text-color)">日程管理</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'my_page' %}" style="color:var(--text-color)">我的</a>
+        </div>
+    </nav>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- 页面背景上传控件 -->
+        <div class="bg-upload-container">
+            <label for="bgInput" class="bg-upload-label">更换背景</label>
+            <input type="file" name="page_background" id="bgInput" class="bg-upload" accept="image/*"
+                onchange="changePageBg(event)">
+        </div>
+
+        <div class="profile-page">
+            <!-- 个人信息区域 -->
+            <div class="profile-page">
+                <div class="profile-header">
+                    <div class="profile-container">
+                        <!-- 个人资料背景 -->
+                        <div class="profile-banner" id="profileBanner"
+                            style="background-image: url('{{ profile.personal_background.url }}');">
+                            <input type="file" name="personal_background" accept="image/*" hidden id="uploadBanner"
+                                onchange="changeBanner(event)">
+                            <button type="button" class="change-banner-btn"
+                                onclick="document.getElementById('uploadBanner').click()">更换个人资料背景</button>
+                        </div>
+
+                        <!-- 头像 -->
+                        <div class="profile-avatar-container">
+                            <input type="file" name="avatar" accept="image/*" hidden id="uploadAvatar"
+                                onchange="changeAvatar(event)">
+                            <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'images/default_avatar.png' %}{% endif %}"
+                                class="profile-avatar" id="profileAvatar"
+                                onclick="document.getElementById('uploadAvatar').click()">
+                        </div>
+
+                        <!-- 用户资料 -->
+                        <div class="profile-content">
+                            <h2 class="profile-name">{{ user.username }}</h2>
+                            <p class="profile-bio">{{ profile.bio }}</p>
+
+                            <!-- 编辑弹窗 -->
+                            <div class="modal-overlay" id="modalOverlay"></div>
+                            <div class="profile-modal" id="profileModal">
+                                <span class="close-modal" onclick="closeProfileEdit()">&times;</span>
+                                <h3 style="text-align:center;">编辑个人资料</h3>
+
+                                <label>用户名：</label>
+                                <input type="text" name="username" value="{{ user.username }}">
+
+                                <label>个性签名：</label>
+                                <textarea name="bio">{{ profile.bio }}</textarea>
+
+                                <button type="submit" class="update-profile-btn">更新资料</button>
+                            </div>
+
+                            <div class="profile-update-notice" id="profileUpdateNotice">个人资料已更新！</div>
+                            <button class="edit-profile-btn" type="button" onclick="openProfileEdit()">编辑资料</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <!-- 分栏布局 -->
+    <div class="main-content">
+        <!-- 左栏：关注列表 -->
+        <div class="left-column">
+            <h3>我关注的人</h3>
+            <hr class="divider">
+            <div class="friend-list-container">
+                {% for follow in follows %}
+                <div class="friend-item">
+                    <img class="w-10 h-10 rounded-full object-cover"
+                        src="{{ follow.followed.avatar.url|default:'/static/images/default_avatar.png' }}" alt="头像"
+                        class="user-avatar" />
+                    <span>{{ follow.followed.username }}</span>
+                </div>
+                {% empty %}
+                <p class="text-gray-400">你还没有关注任何人</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 中栏：帖子内容 -->
+        <div class="middle-column">
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'myPosts')" id="defaultOpen">
+                    <i class="fas fa-home"></i> 我的帖子
+                </button>
+                <button class="tablinks" onclick="openTab(event, 'myFavorites')">
+                    <i class="fas fa-heart"></i> 我的收藏
+                </button>
+                <button class="tablinks" onclick="openTab(event, 'myLikes')">
+                    <i class="fas fa-thumbs-up"></i> 我的赞
+                </button>
+            </div>
+
+            <!-- 我的帖子 -->
+            <div id="myPosts" class="tabcontent">
+                {% for post in my_posts %}
+                <div class="relative post-card shadow-md rounded-lg p-4 mb-6 bg-white dark:bg-gray-800">
+                    <!-- 用户信息区 -->
+                    <div class="post-header flex items-center space-x-3 mb-2">
+                        {% if post.user.avatar %}
+                        <img class="w-10 h-10 rounded-full object-cover" src="{{ post.user.avatar.url }}" alt="用户头像">
+                        {% else %}
+                        <img class="w-10 h-10 rounded-full object-cover" src="{% static 'images/default_avatar.png' %}"
+                            alt="默认头像">
+                        {% endif %}
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ post.user.username }}</h3>
+                            <p class="text-sm text-gray-500">{{ post.created_at|timesince }}前</p>
+                        </div>
+
+                        <div class="absolute top-4 right-4 z-10">
+                            <button onclick="toggleOptionsMenuDelete(this)"
+                                class="text-gray-500 hover:text-gray-800 dark:hover:text-white">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <div
+                                class="options-menu hidden absolute right-0 mt-2 w-32 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg">
+                                <form method="post" action="{% url 'delete_post' post.id %}"
+                                    onsubmit="return confirm('确定要删除这条帖子吗？');">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600">
+                                        删除帖子
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- 帖子内容 -->
+                    <div class="post-content text-gray-800 dark:text-gray-200 mb-2">
+                        <p>{{ post.content }}</p>
+                    </div>
+
+                    <!-- 媒体展示 -->
+                    <div class="post-media space-y-2">
+                        {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="帖子图片" class="w-full rounded-lg">
+                        {% endif %}
+                        {% if post.video %}
+                        <video controls class="w-1/2 h-auto rounded-lg">
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                        </video>
+                        {% endif %}
+                    </div>
+
+                    <!-- 简洁信息展示区 -->
+                    <div class="post-actions flex space-x-4 text-sm text-gray-600 mt-4">
+                        <div><i class="fa-regular fa-heart mr-1"></i>{{ post.like_count }}</div>
+                        <div><i class="fa-regular fa-comment-dots mr-1"></i>{{ post.comment_count }}</div>
+                        <div><i class="fa-regular fa-bookmark mr-1"></i>{{ post.favorite_count }}</div>
+                    </div>
+
+                    <!-- 评论展示（最多展示前几条） -->
+                    {% if post.comment_set.all %}
+                    <div class="post-comments mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        {% for comment in post.comment_set.all|slice:":3" %}
+                        <div><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</div>
+                        {% endfor %}
+                        {% if post.comment_set.count > 3 %}
+                        <div class="text-gray-400 italic">……更多评论</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-center mt-6">暂无内容。</p>
+                {% endfor %}
+
+            </div>
+
+            <!-- 我的收藏 -->
+            <div id="myFavorites" class="tabcontent" style="display: none;">
+                {% for post in favorited_posts %}
+                <div class="post-card shadow-md rounded-lg p-4 mb-6 bg-white dark:bg-gray-800">
+                    <!-- 用户信息区 -->
+                    <div class="post-header flex items-center space-x-3 mb-2">
+                        {% if post.user.avatar %}
+                        <img class="w-10 h-10 rounded-full object-cover" src="{{ post.user.avatar.url }}" alt="用户头像">
+                        {% else %}
+                        <img class="w-10 h-10 rounded-full object-cover" src="{% static 'images/default_avatar.png' %}"
+                            alt="默认头像">
+                        {% endif %}
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ post.user.username }}</h3>
+                            <p class="text-sm text-gray-500">{{ post.created_at|timesince }}前</p>
+                        </div>
+                    </div>
+
+                    <!-- 帖子内容 -->
+                    <div class="post-content text-gray-800 dark:text-gray-200 mb-2">
+                        <p>{{ post.content }}</p>
+                    </div>
+
+                    <!-- 媒体展示 -->
+                    <div class="post-media space-y-2">
+                        {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="帖子图片" class="w-full rounded-lg">
+                        {% endif %}
+                        {% if post.video %}
+                        <video controls class="w-1/2 h-auto rounded-lg">
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                        </video>
+                        {% endif %}
+                    </div>
+
+                    <!-- 简洁信息展示区 -->
+                    <div class="post-actions flex space-x-4 text-sm text-gray-600 mt-4">
+                        <div><i class="fa-regular fa-heart mr-1"></i>{{ post.like_count }}</div>
+                        <div><i class="fa-regular fa-comment-dots mr-1"></i>{{ post.comment_count }}</div>
+                        <div><i class="fa-regular fa-bookmark mr-1"></i>{{ post.favorite_count }}</div>
+                    </div>
+
+                    <!-- 评论展示（最多展示前几条） -->
+                    {% if post.comment_set.all %}
+                    <div class="post-comments mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        {% for comment in post.comment_set.all|slice:":3" %}
+                        <div><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</div>
+                        {% endfor %}
+                        {% if post.comment_set.count > 3 %}
+                        <div class="text-gray-400 italic">……更多评论</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-center mt-6">暂无内容。</p>
+                {% endfor %}
+            </div>
+
+            <!-- 我的点赞 -->
+            <div id="myLikes" class="tabcontent" style="display: none;">
+                {% for post in liked_posts %}
+                <div class="post-card shadow-md rounded-lg p-4 mb-6 bg-white dark:bg-gray-800">
+                    <!-- 用户信息区 -->
+                    <div class="post-header flex items-center space-x-3 mb-2">
+                        {% if post.user.avatar %}
+                        <img class="w-10 h-10 rounded-full object-cover" src="{{ post.user.avatar.url }}" alt="用户头像">
+                        {% else %}
+                        <img class="w-10 h-10 rounded-full object-cover" src="{% static 'images/default_avatar.png' %}"
+                            alt="默认头像">
+                        {% endif %}
+                        <div>
+                            <h3 class="font-semibold text-gray-900 dark:text-gray-100">{{ post.user.username }}</h3>
+                            <p class="text-sm text-gray-500">{{ post.created_at|timesince }}前</p>
+                        </div>
+                    </div>
+
+                    <!-- 帖子内容 -->
+                    <div class="post-content text-gray-800 dark:text-gray-200 mb-2">
+                        <p>{{ post.content }}</p>
+                    </div>
+
+                    <!-- 媒体展示 -->
+                    <div class="post-media space-y-2">
+                        {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="帖子图片" class="w-full rounded-lg">
+                        {% endif %}
+                        {% if post.video %}
+                        <video controls class="w-1/2 h-auto rounded-lg">
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                        </video>
+                        {% endif %}
+                    </div>
+
+                    <!-- 简洁信息展示区 -->
+                    <div class="post-actions flex space-x-4 text-sm text-gray-600 mt-4">
+                        <div><i class="fa-regular fa-heart mr-1"></i>{{ post.like_count }}</div>
+                        <div><i class="fa-regular fa-comment-dots mr-1"></i>{{ post.comment_count }}</div>
+                        <div><i class="fa-regular fa-bookmark mr-1"></i>{{ post.favorite_count }}</div>
+                    </div>
+
+                    <!-- 评论展示（最多展示前几条） -->
+                    {% if post.comment_set.all %}
+                    <div class="post-comments mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                        {% for comment in post.comment_set.all|slice:":3" %}
+                        <div><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</div>
+                        {% endfor %}
+                        {% if post.comment_set.count > 3 %}
+                        <div class="text-gray-400 italic">……更多评论</div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-gray-500 text-center mt-6">暂无内容。</p>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!-- 右栏：互动通知区 -->
+        <div class="right-column">
+            <!-- 📅 即将到来的日程 -->
+            <div class="notification-card mt-4">
+                <h4>📅 即将到来的日程</h4>
+                <ul>
+                    {% for event in upcoming_events %}
+                    <li class="text-sm mb-2">
+                        <i class="fas fa-calendar-alt text-purple-500 mr-1"></i>
+                        <strong>{{ event.title }}</strong><br>
+                        <span class="text-gray-500 text-xs">{{ event.datetime|date:"Y年m月d日 H:i" }}</span>
+                    </li>
+                    {% endfor %}
+                    {% if not upcoming_events %}
+                    <li class="text-gray-500">暂无即将到来的日程</li>
+                    {% endif %}
+                </ul>
+                <div class="text-right mt-2">
+                    <a href="{% url 'schedule' %}" class="text-sm text-primary hover:underline">查看全部日程 &rarr;</a>
+                </div>
+            </div>
+
+            <!-- ✅ 我的待办事项 -->
+            <div class="notification-card mt-4">
+                <h4>✅ 我的待办事项</h4>
+                <ul>
+                    {% for task in recent_tasks %}
+                    <li class="text-sm mb-2">
+                        <i class="fas fa-check-circle text-green-500 mr-1"></i>
+                        {{ task.text }}
+                        <span class="text-gray-400 text-xs block">添加于 {{ task.created_at|date:"m月d日 H:i" }}</span>
+                    </li>
+                    {% endfor %}
+                    {% if not recent_tasks %}
+                    <li class="text-gray-500">暂无未完成的任务</li>
+                    {% endif %}
+                </ul>
+                <div class="text-right mt-2">
+                    <a href="{% url 'schedule' %}" class="text-sm text-primary hover:underline">前往日程管理 &rarr;</a>
+                </div>
+            </div>
+
+            <div class="notification-card notifications">
+                <h4>🔔 互动通知</h4>
+                <ul>
+                    {% for like in recent_likes %}
+                    <li>
+                        <i class="fas fa-heart text-red-500"></i>
+                        <strong>{{ like.user.username }}</strong> 点赞了你的帖子：
+                        <span>{{ like.post.content|truncatechars:12 }}</span>
+                    </li>
+                    {% endfor %}
+
+                    {% for comment in recent_comments %}
+                    <li>
+                        <i class="fas fa-comment-dots text-blue-500"></i>
+                        <strong>{{ comment.user.username }}</strong> 评论了你的帖子：
+                        <span>{{ comment.content|truncatechars:12 }}</span>
+                    </li>
+                    {% endfor %}
+
+                    {% if not recent_likes and not recent_comments %}
+                    <li class="text-gray-500">暂无互动</li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <footer class="py-8 px-4 md:px-8 text-center fade-in" style=animation-delay:1.2s>
+        <div class="flex flex-col items-center">
+            <div class="mb-4 text-lg font-medium">作者: 赵一芬 徐媛铃 李思妍</div>
+            <p class="text-sm opacity-70">© 2025 SignLink手语通. 保留所有权利.
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,59 @@
+.user-menu-box-container {
+    position: relative;
+    display: inline-block;
+    z-index: 100;  /* ✅ 确保下拉在最上层 */
+}
+
+.user-menu-box-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.user-menu-box-button:hover {
+    background-color: #f4f4f4;
+}
+
+.user-menu-box-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-menu-box-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 160px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 999;  /* ✅ 确保悬浮框在其他元素上方 */
+}
+
+.user-menu-box-dropdown a {
+    display: block;
+    padding: 10px 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: background-color 0.2s ease;
+}
+
+.user-menu-box-dropdown a:hover {
+    background-color: #f0f0f0;
+}
+
+.user-menu-box-container:hover .user-menu-box-dropdown {
+    display: block;
+}

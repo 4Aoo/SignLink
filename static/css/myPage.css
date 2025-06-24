@@ -1,0 +1,931 @@
+/* 全局样式 */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+/* 自定义背景 */
+/* 左上角背景上传按钮样式 */
+.bg-upload-container {
+    position: fixed;
+    top: 20px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 8px 12px;
+    border-radius: 6px;
+    z-index: 1000;
+}
+
+.bg-upload-label {
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.bg-upload {
+    display: none;
+}
+
+/* 让背景图片自适应网页并平铺 */
+body {
+    background-size: cover;
+    /* 确保图片适应整个屏幕 */
+    background-repeat: no-repeat;
+    /* 不重复 */
+    background-attachment: fixed;
+    /* 固定背景 */
+    background-position: center;
+    /* 居中对齐 */
+}
+
+
+
+
+/* 个人信息区域 */
+/* 个人资料容器 */
+.profile-container {
+    width: 100%;
+    max-width: 1000px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    text-align: center;
+    margin: 20px auto;
+    position: relative;
+}
+
+/* 背景横幅 */
+.profile-banner {
+    height: 200px;
+    background: url("https://via.placeholder.com/800x200/7f7fff") center/cover no-repeat;
+    position: relative;
+}
+
+/* 更换背景按钮 */
+.change-banner-btn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.change-banner-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* 头像容器 */
+.profile-avatar-container {
+    position: absolute;
+    top: 120px;
+    /* 让头像悬浮在背景之上 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 130px;
+    height: 130px;
+    background: white;
+    /* 白色背景 */
+    border-radius: 50%;
+    border: 4px solid #ddd;
+    /* 灰色边框 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 头像 */
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* 个人信息部分 */
+.profile-content {
+    padding-top: 60px;
+    /* 预留空间给悬浮的头像 */
+}
+
+/* 用户昵称 */
+.profile-name {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* 所在地 */
+.profile-location {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+/* 个人签名 */
+.profile-bio {
+    font-size: 14px;
+    color: #444;
+    padding: 0 15px;
+    margin-bottom: 10px;
+}
+
+/* 编辑资料按钮 */
+.edit-profile-btn {
+    background: #BA68C8;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.edit-profile-btn:hover {
+    background: #9C4ABC;
+}
+
+
+
+/* 修改个人资料 */
+/* 遮罩层 */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    /* 加深遮罩，提高可读性 */
+    z-index: 9998;
+}
+
+/* 弹窗样式 */
+.profile-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 关闭按钮 */
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.close-modal:hover {
+    color: #000;
+}
+
+/* 输入框样式 */
+.profile-modal input,
+.profile-modal textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* 按钮样式 */
+.update-profile-btn {
+    background: #9C4ABC;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.2s;
+}
+
+.update-profile-btn:hover {
+    background: #9C4ABC;
+}
+
+/* 更新成功通知 */
+.profile-update-notice {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    display: none;
+    z-index: 10000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 3s ease-in-out;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -55%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -30px);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -30px);
+    }
+}
+
+
+
+
+
+/* 分栏布局 */
+.main-content {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
+
+
+/* 左栏：好友列表 */
+.left-column {
+    flex: 3;
+    margin: 5px;
+    padding: 10px;
+    background: #F3E5F5;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(180, 136, 255, 0.2);
+}
+
+.left-column h3 {
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #6A1B9A;
+    font-weight: bold;
+}
+
+/* 搜索框*/
+.search-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: #BA68C8;
+}
+
+/* 滑动好友列表容器 */
+.friend-list-container {
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    max-height: 250px;
+    /* 限制最大高度 */
+    overflow-y: auto;
+    /* 启用垂直滚动 */
+    margin-bottom: 15px;
+}
+
+/* 滚动条轨道 */
+.friend-list-container::-webkit-scrollbar {
+    width: 8px;
+    /* 设置滚动条的宽度 */
+}
+
+/* 滚动条滑块 */
+.friend-list-container::-webkit-scrollbar-thumb {
+    background-color: #BA68C8;
+    /* 滑块的颜色 */
+    border-radius: 4px;
+    /* 圆角 */
+}
+
+/* 分割线 */
+.divider {
+    border: 1px solid #ffffff;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+/* 好友分组标题 */
+.friend-group {
+    margin-bottom: 5px;
+}
+
+.group-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: bold;
+    color: #6A1B9A;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.group-title:hover {
+    color: #9C27B0;
+}
+
+.group-members {
+    display: none;
+}
+
+.group-members.show {
+    display: block;
+}
+
+/* 好友条目 */
+.friend-item {
+    display: flex;
+    align-items: center;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.friend-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 在线/离线状态 */
+.friend-item::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.friend-item.online::before {
+    background: green;
+}
+
+.friend-item.offline::before {
+    background: gray;
+}
+
+/* 头像样式 */
+.friend-item img {
+    justify-self: left;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid #E1BEE7;
+    transition: transform 0.2s;
+}
+
+.friend-item img:hover {
+    transform: scale(1.1);
+}
+
+/* 文字部分 */
+.friend-item span {
+    font-size: 14px;
+    font-weight: bold;
+    color: #5E35B1;
+}
+
+/* 私信按钮 */
+.message-btn {
+    background: #BA68C8;
+    border: none;
+    color: white;
+    padding: 6px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-left: auto;
+}
+
+.message-btn:hover {
+    background: #9C27B0;
+}
+
+.message-btn i {
+    font-size: 16px;
+}
+
+
+
+
+
+
+
+
+/* 中栏：帖子区 */
+.middle-column {
+    flex: 6;
+    margin: 5px;
+    padding: 10px;
+    background: #F3E5F5;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(180, 136, 255, 0.2);
+}
+
+
+/* Tab容器样式 */
+.tab {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+}
+
+/* Tab按钮样式 */
+.tablinks {
+    background-color: transparent;
+    color: #6a1b9a;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    /* 左对齐文字 */
+    display: flex;
+    /* 使用flex布局 */
+    align-items: center;
+    /* 垂直居中对齐内容 */
+    gap: 10px;
+    /* 图标和文字之间的间距 */
+    transition: all 0.3s ease;
+    margin: 5px;
+    font-weight: 500;
+}
+
+/* 鼠标悬停时的样式 */
+.tablinks:hover {
+    background-color: #f3e5f5;
+    color: #6a1b9a;
+    transform: translateY(-2px);
+    /* 鼠标悬停时按钮稍微上浮 */
+}
+
+/* 激活状态的样式 */
+.tablinks.active {
+    border-bottom: 3px solid #6a1b9a;
+    background-color: #f3e5f5;
+    color: #6a1b9a;
+    font-weight: bold;
+    transform: translateY(-2px);
+    /* 激活状态时按钮稍微上浮 */
+}
+
+/* Tab内容区域 */
+.tab-content {
+    display: flex;
+    align-items: center;
+}
+
+.tab-content p {
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+/* 选项卡内容 */
+.tabcontent {
+    display: none;
+    padding: 10px;
+}
+
+#myPosts {
+    display: block;
+}
+
+/* 让所有 tab 下的帖子容器都适用 */
+.postContainer {
+    display: flex;
+    flex-direction: column;
+    /* 帖子纵向排列 */
+    gap: 10px;
+    /* 帖子之间留间距 */
+    align-items: center;
+    /* 居中对齐 */
+}
+
+/* 单个帖子样式 */
+.feed-post {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.feed-post:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 帖子头部对齐 */
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.post-avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.post-info {
+    font-size: 14px;
+    color: gray;
+}
+
+.post-user-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #6A1B9A;
+}
+
+.post-time {
+    font-size: 12px;
+    color: gray;
+}
+
+/* 帖子正文 */
+.post-content {
+    font-size: 16px;
+    color: #333;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+
+/* 帖子操作按钮 */
+/* 右上角扩展栏 */
+.post-options {
+    position: relative;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.post-options i {
+    font-size: 18px;
+    color: #888;
+    transition: color 0.3s;
+}
+
+.post-options i:hover {
+    color: #555;
+}
+
+/* 🔹 扩展菜单 */
+.options-menu {
+    position: absolute;
+    right: 0;
+    top: 25px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12); /* 柔和阴影 */
+    border-radius: 6px;
+    display: none;
+    flex-direction: column;
+    min-width: 120px; /* 设置最小宽度 */
+    width: auto; /* 宽度根据内容自适应 */
+    padding: 5px 0; /* 让菜单项不会贴着边界 */
+    overflow: hidden; /* 避免内容溢出 */
+}
+
+/* 🔹 菜单项 */
+.options-menu button {
+    background: none;
+    border: none;
+    padding: 8px 15px; /* 适当增加左右间距 */
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4A148C; /* 深紫色，符合整体风格 */
+    white-space: nowrap; /* 防止换行 */
+    transition: background 0.2s, color 0.2s;
+}
+
+.options-menu button i{
+    color: #4A148C;
+    margin-right: 5px;
+}
+
+/* 🔹 悬浮时的美化 */
+.options-menu button:hover {
+    background: #f3e5f5; /* 柔和的淡紫色背景 */
+    color: #6A1B9A; /* 略深的紫色文本 */
+}
+
+
+.options-menu button:hover {
+    background: #f3e5f5;
+}
+
+/* 🔹 帖子交互区域 */
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #e0cce5; /* 添加分隔线，使交互区域更融合 */
+}
+
+/* 🔹 交互按钮美化 */
+.post-actions button {
+    background: none; /* 默认无背景，使其更自然 */
+    color: #8e44ad; /* 低饱和度紫色 */
+    border: none;
+    padding: 4px 8px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.3s, transform 0.2s;
+}
+
+/* 🔹 悬浮时增加互动感 */
+.post-actions button:hover {
+    color: #6a1b9a; /* 悬浮时颜色稍深 */
+    transform: scale(1.05); /* 悬浮时略微放大 */
+}
+
+/* 🔹 按钮内图标样式 */
+.post-actions button i {
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+/* 🔹 按钮悬浮时图标颜色变化 */
+.post-actions button:hover i {
+    color: #6a1b9a;
+}
+
+
+
+
+/* 分页容器 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    gap: 8px;
+}
+
+/* 分页按钮 */
+.pagination button {
+    padding: 8px 12px;
+    border: none;
+    background: #BA68C8;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.pagination button:hover {
+    background: #9C27B0;
+}
+
+/* 禁用按钮样式 */
+.pagination button:disabled {
+    background: #D1C4E9;
+    cursor: not-allowed;
+}
+
+/* 分页信息 */
+.page-info {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 页码输入框 */
+.page-input {
+    width: 50px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.page-input:focus {
+    outline: 2px solid #BA68C8;
+}
+
+
+
+
+
+
+
+/* 右栏：通知区 */
+/* 🎯 右栏整体布局 */
+.right-column {
+    flex: 3.5;
+    margin: 5px;
+    padding: 10px;
+    background: #F3E5F5;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(180, 136, 255, 0.2);
+}
+
+/* 📌 通知卡片基础样式 */
+.notification-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notification-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+}
+
+.notification-card h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* 📅 日程管理 */
+.todo-list {
+    list-style: none;
+    padding: 0;
+}
+
+.todo-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.todo-list li:hover {
+    color: #6A1B9A;
+}
+
+/* 🏫 手语教室按钮 */
+.join-class-btn {
+    background: #6A1B9A;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.join-class-btn:hover {
+    background: #5C1380;
+    transform: scale(1.05);
+}
+
+/* 🔔 互动通知 */
+.notifications ul {
+    list-style: none;
+    padding: 0;
+}
+
+.notifications li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-bottom: 6px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.notifications li:hover {
+    background: rgba(106, 27, 154, 0.08);
+}
+
+.notifications img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+/* 🌟 个性化推荐 */
+.recommendations p {
+    background: rgba(186, 104, 200, 0.15);
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin: 5px 0;
+    font-size: 14px;
+    transition: background 0.3s ease;
+    cursor: pointer;
+}
+
+.recommendations p:hover {
+    background: rgba(186, 104, 200, 0.3);
+}
+
+/* 🏆 每日签到 */
+.checkin-btn {
+    background: #BA68C8;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin-top: 5px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.checkin-btn:hover {
+    background: #9C27B0;
+    transform: scale(1.05);
+}
+
+/* 🎖️ 勋章墙 */
+.badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.badge {
+    background: rgba(186, 104, 200, 0.2);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #6A1B9A;
+}

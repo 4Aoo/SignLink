@@ -1,0 +1,387 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手语教室</title>
+
+    <link rel="stylesheet" href="{% static 'css/SLClassroom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_button.css' %}">
+
+    <!-- 引入 Font Awesome 图标库 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src=https://cdn.tailwindcss.com></script>
+
+    <!-- mediapipe -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="{% static 'js/SLClassroom.js' %}"></script>
+    <script type="module" src="{% static 'js/upload_tasks_evaluator.js' %}"></script>
+</head>
+
+<body>
+    <!-- 导航栏 -->
+    <header class="py-6 px-4 md:px-8 flex justify-between items-center">
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+            <a class="text-3xl md:text-4xl font-bold fade-in">SignLink手语通</a>
+            <p class="text-lg md:text-xl opacity-80 fade-in mt-2">连接手语世界，沟通无障碍</p>
+        </div>
+
+        <div class="flex items-center space-x-4 ml-auto">
+            {% if user.is_authenticated %}
+            <div class="user-menu-box-container">
+                <a href="{% url 'my_page' %}" class="user-menu-box-button">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="头像" class="user-menu-box-avatar">
+                    {% else %}
+                    <img src="{% static 'images/default_avatar.png' %}" alt="默认头像" class="user-menu-box-avatar">
+                    {% endif %}
+                    {{ user.username }}
+                </a>
+                <div class="user-menu-box-dropdown">
+                    <a href="{% url 'my_page' %}">进入个人主页</a>
+                    <a href="{% url 'logout' %}">退出登录</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="user-menu-box-login">
+                <i class="fas fa-user"></i> 登录
+            </a>
+            {% endif %}
+        </div>
+    </header>
+    <nav class="sticky top-0 bg-opacity-90 backdrop-blur-sm py-4 px-4 md:px-8 z-50 fade-in"
+        style=background-color:var(--card-bg)>
+        <div class="container mx-auto flex justify-center space-x-8">
+            <a class="nav-link text-lg font-medium" href="{% url 'home' %}" style="color:var(--text-color)">首页</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'sl_classroom' %}"
+                style="color:var(--text-color)">手语教室</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'life_serving' %}"
+                style="color:var(--text-color)">生活服务</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'community' %}"
+                style="color:var(--text-color)">手语社区</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'schedule' %}" style="color:var(--text-color)">日程管理</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'my_page' %}" style="color:var(--text-color)">我的</a>
+        </div>
+    </nav>
+
+
+    <nav class="navbar">
+        <div class="logo">
+            <span class="title-highlight">🤟 手语教室</span>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <div class="icon-container">
+            <!-- 学习进度图标 -->
+            <div class="hover-container">
+                <div class="icon-circle">
+                    <span class="navbaricon">
+                        <i class="fas fa-chart-line text-purple-700 text-5xl hover:text-purple-500 transition-all"></i>
+                    </span>
+                </div>
+                <div class="hover-card">
+                    <h3>学习进度</h3>
+                    <p>你已经完成了<span class="font-bold">75%</span>的基础手语课程！</p>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 75%;"></div>
+                    </div>
+                    <p>继续努力，你距离下一个奖励只差一步！</p>
+                </div>
+            </div>
+
+
+            <!-- 我的积分图标 -->
+            <div class="hover-container">
+                <div class="icon-circle">
+                    <span class="navbaricon">
+                        <i class="fas fa-gem text-purple-700 text-5xl hover:text-purple-500 transition-all"></i>
+                    </span>
+                </div>
+                <div class="hover-card">
+                    <h3>我的积分</h3>
+                    <p>你目前拥有 <span class="font-bold">1200</span> 积分！</p>
+                    <p>完成更多任务，获得更多积分！</p>
+                    <div class="bonus-animations">
+                        <span>积分即将加倍！</span>
+                        <div class="gem-spin">
+                            <i class="fas fa-gem text-yellow-500 text-4xl spin"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+
+
+
+    <!-- 学习模块 -->
+    <div class="content">
+        <!-- 侧边栏按钮部分 -->
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'videoPractice')" id="defaultOpen">
+                <div class="tab-content flex items-center mb-4">
+                    <div>
+                        <i class="fas fa-book text-purple-600 dark:text-purple-400 text-xl"></i>
+                        <h3 class="text-xl font-semibold">镜像视频练习</h3>
+                    </div>
+                </div>
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'signLanguageMap')">
+                <div class="tab-content flex items-center mb-4">
+                    <div>
+                        <i class="fas fa-book text-purple-600 dark:text-purple-400 text-xl"></i>
+                        <h3 class="text-xl font-semibold">基础手语课程</h3>
+                    </div>
+                </div>
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'videoLessons')">
+                <div class="tab-content flex items-center mb-4">
+                    <div>
+                        <i class="fas fa-video text-purple-600 dark:text-purple-400 text-xl"></i>
+                        <h3 class="text-xl font-semibold">视频教学</h3>
+                    </div>
+                </div>
+            </button>
+            <button class="tablinks" onclick="openTab(event, 'practiceSection')">
+                <div class="tab-content flex items-center mb-4">
+                    <div>
+                        <i class="fas fa-comments text-purple-600 dark:text-purple-400 text-xl"></i>
+                        <h3 class="text-xl font-semibold">互动练习</h3>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <!-- 选项卡内容部分 -->
+        <div class="tabcontent" id="videoPractice">
+            <h3 class="text-3xl font-bold mb-6 text-center">📹 上传手语视频进行匹配评分</h3>
+
+            <div class="max-w-4xl mx-auto space-y-6 bg-white p-6 rounded-xl shadow-lg">
+                <!-- 手势选择下拉 -->
+                <div class="my-4 flex items-center gap-4">
+                    <label for="gestureSelect" class="font-medium">选择标准手势：</label>
+                    <select id="gestureSelect" class="px-3 py-1 border rounded text-sm">
+                        <option value="你好">你好</option>
+                        <option value="早上好">早上好</option>
+                        <option value="谢谢">谢谢</option>
+                        <!-- 你可以继续添加其他手势选项 -->
+                    </select>
+                </div>
+
+                <!-- ✅ 标准参考区 -->
+                <div class="flex flex-wrap md:flex-nowrap gap-6 my-6">
+                    <!-- 标准 Canvas 动画 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2">🎯 标准手势预览</h3>
+                        <canvas id="standardCanvas" width="320" height="320" class="border rounded shadow"></canvas>
+                        <button id="replayBtn" class="mt-2 bg-blue-500 text-white px-4 py-1 rounded">▶️ 重播手势动画</button>
+                    </div>
+
+                    <!-- 标准视频窗口 -->
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold mb-2">🎥 标准示范视频</h3>
+                        <video id="standardVideo" class="w-full rounded shadow" controls></video>
+                    </div>
+                </div>
+
+
+
+
+                <!-- ✅ 模式选择卡片 -->
+                <div class="flex justify-center gap-6 mb-6" id="modeCards">
+                    <div id="card-video"
+                        class="mode-card border rounded-lg p-4 shadow cursor-pointer bg-white text-center transition hover:ring-2 hover:ring-blue-500">
+                        <div class="text-2xl">📤</div>
+                        <div class="mt-2 font-semibold text-gray-800">上传视频评分</div>
+                    </div>
+                    <div id="card-live"
+                        class="mode-card border rounded-lg p-4 shadow cursor-pointer bg-white text-center transition hover:ring-2 hover:ring-blue-500">
+                        <div class="text-2xl">📷</div>
+                        <div class="mt-2 font-semibold text-gray-800">实时摄像头评分</div>
+                    </div>
+                </div>
+
+
+
+                <!-- ✅ 实时摄像头控件 -->
+                <div id="liveSection" class="hidden">
+                    <div class="my-6">
+                        <h3 class="text-lg font-bold mb-2">📷 实时摄像头预览</h3>
+                        <video id="liveVideo" autoplay muted playsinline style="transform: scaleX(-1);"
+                            class="rounded-xl shadow w-full max-w-md"></video>
+                        <button id="startLiveBtn" class="mt-2 bg-green-500 text-white px-4 py-2 rounded">开始实时匹配</button>
+                        <button id="stopLiveBtn"
+                            class="mt-2 bg-gray-400 text-white px-4 py-2 rounded hidden">停止</button>
+                        <div id="liveFeedback" class="mt-2 text-sm font-medium"></div>
+                    </div>
+                </div>
+
+
+
+                <!-- ✅ 视频上传控件 -->
+                <div id="uploadSection">
+                    <div class="my-4">
+                        <label class="block mb-2 text-sm font-medium text-gray-700">📤 上传手语视频</label>
+                        <input type="file" id="videoUpload" accept="video/mp4"
+                            class="block w-full text-sm text-gray-600 border rounded p-2 shadow" />
+                    </div>
+
+                    <!-- ✅ 匹配反馈区域 -->
+                    <div id="feedback"
+                        class="text-center text-sm font-medium text-gray-700 bg-gray-100 py-2 px-4 rounded-full w-fit mx-auto shadow">
+                        请上传视频后等待评分...
+                    </div>
+
+                    <!-- ✅ 视频播放和隐藏分析用容器 -->
+                    <video id="uploadedVideo" class="w-full bg-gray-200 rounded-xl mt-4" controls></video>
+                    <canvas id="hiddenCanvas" width="640" height="480" class="hidden"></canvas>
+
+                    <!-- ✅ 高得分帧展示卡片 -->
+                    <div class="mt-8">
+                        <h3 class="text-lg font-bold mb-2 text-center">✨ 匹配最佳的用户帧展示</h3>
+                        <div id="topFramesContainer" class="flex flex-wrap justify-center gap-6"></div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="tabcontent" id="signLanguageMap">
+            <h3>🌍 探索手语世界</h3>
+            <p>完成每个关卡，逐步解锁手语技能！</p>
+
+            <div class="map-container">
+                <!-- 已解锁关卡 -->
+                <div class="map-point unlocked" onclick="openLesson(1)">
+                    <span class="emoji">👋</span>
+                    <span class="lesson-name">问候语</span>
+                </div>
+                <div class="progress-line unlocked-line"></div>
+
+                <div class="map-point unlocked" onclick="openLesson(2)">
+                    <span class="emoji">✋</span>
+                    <span class="lesson-name">日常表达</span>
+                </div>
+                <div class="progress-line locked-line"></div>
+
+                <!-- 未解锁关卡 -->
+                <div class="map-point locked">
+                    <span class="emoji">❓</span>
+                    <span class="lesson-name">家庭成员</span>
+                </div>
+                <div class="progress-line locked-line"></div>
+
+                <div class="map-point locked">
+                    <span class="emoji">❓</span>
+                    <span class="lesson-name">食物饮料</span>
+                </div>
+                <div class="progress-line locked-line"></div>
+
+                <div class="map-point locked">
+                    <span class="emoji">❓</span>
+                    <span class="lesson-name">日常对话</span>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="tabcontent" id="videoLessons">
+            <h3>📚 手语课程视频</h3>
+            <p>欢迎来到手语教学课堂！点击视频进行学习，完成后可解锁新的内容。</p>
+
+            <div class="lesson-container">
+                <div class="lesson-card completed">
+                    <div class="lesson-header">
+                        <span class="lesson-title">第一课：你好</span>
+                        <i class="fas fa-check-circle completed-icon"></i>
+                    </div>
+                    <iframe src="https://player.bilibili.com/player.html?bvid=BV1LW411s7gR&page=1" width="100%"
+                        height="315" frameborder="0" allowfullscreen></iframe>
+                    <div class="lesson-progress">
+                        <div class="progress-bar" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="lesson-card in-progress">
+                    <div class="lesson-header">
+                        <span class="lesson-title">第二课：谢谢</span>
+                        <i class="fas fa-hourglass-half progress-icon"></i>
+                    </div>
+                    <iframe src="https://player.bilibili.com/player.html?bvid=BV1LW411s7gR&page=1" width="100%"
+                        height="315" frameborder="0" allowfullscreen></iframe>
+                    <div class="lesson-progress">
+                        <div class="progress-bar" style="width: 50%;"></div>
+                    </div>
+                </div>
+
+                <div class="lesson-card locked">
+                    <div class="lesson-header">
+                        <span class="lesson-title">第三课：再见</span>
+                        <i class="fas fa-lock lock-icon"></i>
+                    </div>
+                    <p class="locked-message">完成前面课程即可解锁！</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabcontent" id="practiceSection">
+            <h3>✋ 互动练习</h3>
+            <p>点击卡片查看手语的正确含义！</p>
+
+            <div class="practice-container">
+                <div class="practice-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <img src="{% static 'images/sign_you.png' %}" alt="手语示例">
+                        <span>这个手势的含义是？</span>
+                    </div>
+                    <div class="card-back">
+                        <span>👉 你</span>
+                    </div>
+                </div>
+
+                <div class="practice-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <img src="{% static 'images/sign_good.png'%}" alt="手语示例">
+                        <span>这个手势的含义是？</span>
+                    </div>
+                    <div class="card-back">
+                        <span>✨ 好</span>
+                    </div>
+                </div>
+
+                <div class="practice-card" onclick="flipCard(this)">
+                    <div class="card-front">
+                        <img src="{% static 'images/sign_thank_you.png'%}" alt="手语示例">
+                        <span>这个手势的含义是？</span>
+                    </div>
+                    <div class="card-back">
+                        <span>🙏 谢谢！</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <footer class="py-8 px-4 md:px-8 text-center fade-in" style=animation-delay:1.2s>
+        <div class="flex flex-col items-center">
+            <div class="mb-4 text-lg font-medium">作者: 赵一芬 徐媛铃 李思妍</div>
+            <p class="text-sm opacity-70">© 2025 SignLink手语通. 保留所有权利.
+        </div>
+    </footer>
+
+</body>
+</div>
+</body>

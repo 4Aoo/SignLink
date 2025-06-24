@@ -1,0 +1,468 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>公共服务</title>
+    <link rel="stylesheet" href="../static/css/LifeServing.css">
+    <link rel="stylesheet" href="{% static 'css/login_button.css' %}">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href=https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css rel=stylesheet>
+    <script src=https://cdn.tailwindcss.com></script>
+    <script>
+        tailwind.config = {
+            darkMode: `class`
+        }
+    </script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.3"></script>
+</head>
+
+<body>
+    <header class="py-6 px-4 md:px-8 flex justify-between items-center">
+        <div class="absolute left-1/2 transform -translate-x-1/2">
+            <a class="text-3xl md:text-4xl font-bold fade-in">SignLink手语通</a>
+            <p class="text-lg md:text-xl opacity-80 fade-in mt-2">连接手语世界，沟通无障碍</p>
+        </div>
+
+        <div class="flex items-center space-x-4 ml-auto">
+            {% if user.is_authenticated %}
+            <div class="user-menu-box-container">
+                <a href="{% url 'my_page' %}" class="user-menu-box-button">
+                    {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="头像" class="user-menu-box-avatar">
+                    {% else %}
+                    <img src="{% static 'images/default_avatar.png' %}" alt="默认头像" class="user-menu-box-avatar">
+                    {% endif %}
+                    {{ user.username }}
+                </a>
+                <div class="user-menu-box-dropdown">
+                    <a href="{% url 'my_page' %}">进入个人主页</a>
+                    <a href="{% url 'logout' %}">退出登录</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="user-menu-box-login">
+                <i class="fas fa-user"></i> 登录
+            </a>
+            {% endif %}
+        </div>
+    </header>
+    <nav class="sticky top-0 bg-opacity-90 backdrop-blur-sm py-4 px-4 md:px-8 z-50 fade-in"
+        style="background-color:var(--card-bg)">
+        <div class="container mx-auto flex justify-center space-x-8">
+            <a class="nav-link text-lg font-medium" href="{% url 'home' %}" style="color:var(--text-color)">首页</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'sl_classroom' %}" style="color:var(--text-color)">手语教室</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'life_serving' %}" style="color:var(--text-color)">生活服务</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'community' %}" style="color:var(--text-color)">手语社区</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'schedule' %}" style="color:var(--text-color)">日程管理</a>
+            <a class="nav-link text-lg font-medium" href="{% url 'my_page' %}" style="color:var(--text-color)">我的</a>
+        </div>
+    </nav>
+
+    <nav class="nav-container">
+        <ul class="nav-menu">
+            <li class="nav-item" onmouseover="showContent('travel-service')">🚗 出行服务</li>
+            <li class="nav-item" onmouseover="showContent('shopping-guide')">🛍️ 好物推荐</li>
+            <li class="nav-item" onmouseover="showContent('job-info')">💼 就业信息</li>
+            <li class="nav-item" onmouseover="showContent('activity')">❤️ 近期活动</li>
+        </ul>
+    </nav>
+
+    <!-- 出行服务模块 -->
+    <div id="travel-service" class="content-container">
+        <!-- 地图与实时信息并排 -->
+        <div class="traffic-wrapper">
+            <!-- 地图容器 -->
+            <div class="map-container" id="container">
+                <iframe width="100%" height="500" frameborder="0"
+                    src="https://map.baidu.com/@12958171.72,4828364.17,18z?query=深圳市华利嘉电子市场2c086">
+                </iframe>
+                <div class="traffic-legend">
+                    <div class="legend-item">
+                        <span class="traffic-dot traffic-smooth"></span>
+                        <span>畅通</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="traffic-dot traffic-slow"></span>
+                        <span>缓行</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="traffic-dot traffic-congested"></span>
+                        <span>拥堵</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 实时信息侧边栏 -->
+            <div class="traffic-sidebar">
+                <div class="traffic-alert">
+                    <h3>🚨 实时预警</h3>
+                    <ul class="alert-list">
+                        <li>【18:00】地铁2号线人民广场站电梯维护</li>
+                        <li>【17:30】南京西路路段临时管制</li>
+                    </ul>
+                </div>
+
+                <div class="sign-language-tip">
+                    <h3>✋ 手语服务</h3>
+                    <p>周边可提供手语帮助的站点：</p>
+                    <ul class="service-list">
+                        <li>人民广场站 (1号口服务台)</li>
+                        <li>静安寺站 (无障碍服务中心)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 无障碍出行推荐 -->
+        <div class="accessibility-recommend">
+            <div class="recommend-card">
+                <div class="icon">👐</div>
+                <h4>手语导航服务</h4>
+                <p>在线预约手语翻译陪同出行</p>
+                <a href="https://vip.aminer.cn/sign/">
+                    <button class="purple-btn">立即预约</button>
+                </a>
+            </div>
+
+            <div class="recommend-card">
+                <div class="icon">🦻</div>
+                <h4>震动提醒路线</h4>
+                <p>开启手机震动导航模式</p>
+                <a href="https://map.baidu.com/@13529169,3653875,12z,50t">
+                    <button class="purple-btn">开启导航</button></a>
+            </div>
+
+            <div class="recommend-card">
+                <div class="icon">📸</div>
+                <h4>AR实景指引</h4>
+                <p>摄像头识别无障碍设施位置</p>
+                <a href="https://map.baidu.com/@13529169,3653875,12z,50t">
+                    <button class="purple-btn">启动AR</button></a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 好物推荐模块 -->
+    <div id="shopping-guide" class="content-container">
+        <!-- 分类导航 -->
+        <div class="category-nav">
+            <button class="category-btn active" data-category="all">全部</button>
+            <button class="category-btn" data-category="daily">生活日用</button>
+            <button class="category-btn" data-category="tech">科技助残</button>
+            <button class="category-btn" data-category="safety">安全防护</button>
+        </div>
+
+        <!-- 商品展示区 -->
+        <div class="goods-grid">
+            <!-- 商品卡片1 -->
+            <div class="goods-card" data-category="tech">
+                <div class="goods-img" style="background-image: url('../static/images/item1.png')">
+                    <button class="favorite-btn">❤️ 收藏</button>
+                </div>
+                <div class="goods-info">
+                    <h3>智能震动闹钟</h3>
+                    <p class="goods-desc">枕头震动唤醒，静音不扰人</p>
+                    <div class="price-tag">
+                        <span class="current-price">¥268</span>
+                        <span class="original-price">¥399</span>
+                    </div>
+                    <a
+                        href="https://item.taobao.com/item.htm?spm=a21n57.sem.item.9.5af23903hZxXlt&priceTId=2147801b17432965612948760e16f3&utparam=%7B%22aplus_abtest%22%3A%228b1b1e20617466057956ef371f7c333d%22%7D&id=750422232833&ns=1&xxc=ad_ztc&pisk=gAcmD-4Iyxyf5pK8ebNXpMznXQ9-kSN_xcCTX5EwUur5H5pjWPDoRcqv5KNxElmrqo5vlqnu7c0sHEw9cNbjZDfOMn9j71VT_HKp9B3fl5NwvvitPNSbSy526rPaaSaOkprrCB3jll_cbeHy9GADhvOVQloaa8zT-5z43lRyrP43b5r4QgWz8uPa_oz4UuzTotzabo8l4yUN_PyaQuyzlP14_5owaar775zqb5kGvKrj_bly4aYLQNnJRba0nku40q3sanyAhqEoCAczo4ctuO1N_b40nf9w-is8HAuQdj39s_Nx-YPzSfTFIl2nQjFrg3RUFRkZpRDR0EnEj4o_Mb8N3kkxD7lqKN5ZrSqZxbyFm3qEG4lQa8de-4lSDqGoWNRayDErljPMTeN0goPuPfK5glDrQjeb1i-gfb0rgAjr_TWFAqC_zFhPCOw4PzqpMbNBVGI2zF8kr98_3zabvUYlCOw4PzqprUXe1-z7lkC..">
+                        <button class="buy-btn">立即购买</button>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 商品卡片2 -->
+            <div class="goods-card" data-category="safety">
+                <div class="goods-img" style="background-image: url('../static/images/item2.png')">
+                    <button class="favorite-btn">❤️ 收藏</button>
+                </div>
+                <div class="goods-info">
+                    <h3>闪光门铃</h3>
+                    <p class="goods-desc">灯光+震动双重提醒</p>
+                    <div class="price-tag">
+                        <span class="current-price">¥158</span>
+                    </div>
+                    <a
+                        href="https://detail.tmall.com/item.htm?spm=a21n57.sem.item.59.5af23903hZxXlt&priceTId=2147801b17432968509466789e16f3&utparam=%7B%22aplus_abtest%22%3A%22fa6c66f4cf0640a81bd9874522aa55e0%22%7D&id=814651206485&ns=1&xxc=ad_ztc&pisk=goiIcli0Z6fCVwqRFyvaCI4PFNEWNd-2dTw-nYIFekEd2LGr_0z8aec7PblgyDrELfN-gfNd4UVFVuMSZblSEp28wbh7a28w0vD3qudqNn-qKZcGf_lCvWe9e8eYpdzduqhjAud2g3_NByAU2XlV53YOW-VTp8ULpdZTE8jL2zeKBdw8U6QRvbp6C8ebeMUdJGUTn8qRwyFRWGezU7Q8wgI9C8VO9uE-wlp_EAL21RYQ9v9LMKPfga_jT5sR2cw9ZRMBsiwEVJG3gvnB1C9udyNxp5OmjZazWY4SqTj7zv3mZ-hd9QNofAnKkjdN8W3bFxuSML73Qzi3f7npmtNtAYi_-V5dJ-ZQOrnLk39jHz3sfkopZZDZCWUbbV8MTzrIOqV0JFAiNANEwDaOOCPruAoL5jdNfb4SyDrtvCKf4QS4G0rcPOacVRN2Cd_lr5XeAXoDy4kQJR2Z0d91Oa4LIRN2Cd_lryegQrJ6C6_l.">
+                        <button class="buy-btn">立即购买</button>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 更多商品卡片... -->
+            <div class="goods-card" data-category="daily">
+                <div class="goods-img" style="background-image: url('../static/images/item3.png')">
+                    <button class="favorite-btn">❤️ 收藏</button>
+                </div>
+                <div class="goods-info">
+                    <h3>无线紧急呼叫器</h3>
+                    <p class="goods-desc">千呼万唤，不如一按</p>
+                    <div class="price-tag">
+                        <span class="current-price">¥59</span>
+                    </div>
+                    <a
+                        href="https://detail.tmall.com/item.htm?spm=a21n57.sem.item.97.5af23903hZxXlt&priceTId=2147801b17432969192931909e16f3&utparam=%7B%22aplus_abtest%22%3A%223604af41da8b23cbc9775683b3377884%22%7D&id=664135081185&ns=1&xxc=ad_ztc&pisk=gWUIcr4mEpvCybgJNDfZ1tmyNh3SJ17VOQG8i7Lew23py_wzQzo-UM2SV8yi2yuUTRM83RMpzgDeP4N7E8y7Z6c-e8eSUkSNuWVnr4B4FZ74tn2M5LyIpDnOwbhme1op0oebR4BV3atw6DXEyJy2fNs9XjDt9bnK91gtZXtKy0hL61G-apKJJ8C11bhjwenpvFntib0J2bH-WAhqwLhKvULO1bD9v438eVCsZAIFCfjIpW1KHskX3NRLQATJyPGOEmNB0EGUfXNshWUCa_5oODMY9A60SnirX7m7rQYS4WE0EjeppTMu55ULD-BwYvEjNSr7H_-n_0an5YUdoIMTR7asxlJpvjgIdmUKDa1bM0E_52zdEnVa1vnj7lSGL0uQdoDmvGXgF5MUeyi9dOkz05zKf-Bw58m72yuTJOQf4g8qhzuDVCiDPfMV11tkqAAFRJzc2uPIvfcau116d3mKsfMV11tkqDhi_m511ptl.">
+                        <button class="buy-btn">立即购买</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 就业信息模块 -->
+    <div id="job-info" class="content-container">
+        <!-- 搜索筛选区 -->
+        <div class="job-filter">
+            <div class="search-box">
+                <input type="text" placeholder="搜索职位或公司..." class="search-input">
+                <a href="https://www.cdpee.org.cn/job/"><button class="search-btn">🔍 搜索</button></a>
+            </div>
+        </div>
+
+        <!-- 职位列表 -->
+        <div class="job-list">
+            <!-- 职位卡片1 -->
+            <div class="job-card">
+                <div class="job-header">
+                    <h3>前端开发工程师</h3>
+                    <span class="salary">¥15-25K</span>
+                </div>
+                <div class="job-meta">
+                    <span class="company">ⓘ 无声科技</span>
+                    <span class="location">📍 北京</span>
+                    <span class="type">🏷️ 全职</span>
+                </div>
+                <div class="job-tags">
+                    <span class="tag purple">手语面试</span>
+                    <span class="tag purple">远程办公</span>
+                    <span class="tag purple">弹性工时</span>
+                </div>
+                <div class="job-desc">
+                    <p>岗位要求：</p>
+                    <ul>
+                        <li>精通HTML/CSS/JavaScript</li>
+                        <li>熟悉无障碍开发标准</li>
+                        <li>支持文字/视频沟通</li>
+                    </ul>
+                </div>
+                <div class="job-actions">
+                    <a href="https://www.cdpee.org.cn/job/">
+                        <button class="apply-btn">立即申请</button></a>
+                    <button class="save-btn">收藏职位</button>
+                </div>
+            </div>
+
+            <!-- 职位卡片2 -->
+            <div class="job-card highlighted">
+                <div class="job-header">
+                    <h3>手语客服专员</h3>
+                    <span class="salary">¥8-12K</span>
+                </div>
+                <div class="job-meta">
+                    <span class="company">ⓘ 暖心服务</span>
+                    <span class="location">📍 上海</span>
+                    <span class="type">🏷️ 兼职</span>
+                </div>
+                <div class="job-tags">
+                    <span class="tag purple">视频面试</span>
+                    <span class="tag purple">岗前培训</span>
+                </div>
+                <div class="job-desc">
+                    <p>岗位亮点：</p>
+                    <ul>
+                        <li>提供专业手语培训</li>
+                        <li>弹性工作时段</li>
+                        <li>在线工单系统</li>
+                    </ul>
+                </div>
+                <div class="job-actions">
+                    <a href="https://www.cdpee.org.cn/job/">
+                        <button class="apply-btn">立即申请</button></a>
+                    <button class="save-btn">收藏职位</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="activity" class="content-container">
+        <!-- 原有的活动列表 -->
+        <div class="news-list">
+            <article class="news-item">
+                <div class="news-media">
+                    <img src="../static/images/profile/family.jpg" class="news-image" alt="">
+                    <div class="news-meta">
+                        <time class="news-date">2025/02/14</time>
+                        <span class="news-category">亲子家庭</span>
+                    </div>
+                </div>
+                <div class="news-content">
+                    <a href="http://iot.china.com.cn/content/2025-01/03/content_43004726.html"
+                        style="text-decoration: none;">
+                        <h2 class="news-title">亲子同乐，爱在手语间</h2>
+                        <p class="news-desc">于龙东社区219号举办聋哑人家庭参与亲子游戏、手语互动等活动，增进家庭成员间的沟通与情感。</p>
+                    </a>
+                </div>
+            </article>
+
+            <article class="news-item">
+                <div class="news-media">
+                    <img src="../static/images/profile/game.jpg" class="news-image" alt="">
+                    <div class="news-meta">
+                        <time class="news-date">2025/01/15</time>
+                        <span class="news-category">文化娱乐</span>
+                    </div>
+                </div>
+                <div class="news-content">
+                    <a href="https://www.hangzhou2022.cn/paragames/xw/ycydt/202308/t20230814_69562.shtml"
+                        style="text-decoration: none;">
+                        <h2 class="news-title">电竞无界，无声争锋</h2>
+                        <p class="news-desc">本平台将举办聋哑人《英雄联盟》电子竞技比赛，欢迎报名参加！</p>
+                    </a>
+                </div>
+            </article>
+
+            <article class="news-item">
+                <div class="news-media">
+                    <img src="../static/images/profile/travel.jpg" class="news-image" alt="">
+                    <div class="news-meta">
+                        <time class="news-date">2025/01/01</time>
+                        <span class="news-category">休闲娱乐</span>
+                    </div>
+                </div>
+                <div class="news-content">
+                    <a href="https://www.sohu.com/a/427336909_669645" style="text-decoration: none;">
+                        <h2 class="news-title">走遍世界，无声同行</h2>
+                        <p class="news-desc">走遍世界新一期旅行活动又来啦！这一次又将去哪里开启探索呢？</p>
+                    </a>
+                </div>
+            </article>
+
+            <article class="news-item">
+                <div class="news-media">
+                    <img src="../static/images/profile/baking.jpg" class="news-image" alt="">
+                    <div class="news-meta">
+                        <time class="news-date">2025/03/05</time>
+                        <span class="news-category">技能培训</span>
+                    </div>
+                </div>
+                <div class="news-content">
+                    <a href="http://www.cjr.org.cn/info/notice/content/post_1148355.html"
+                        style="text-decoration: none;">
+                        <h2 class="news-title">甜蜜烘焙，无声创造</h2>
+                        <p class="news-desc">无言公社将免费开设烘焙课程，教授聋哑人制作蛋糕、饼干等，心动就快来报名吧！</p>
+                    </a>
+                </div>
+            </article>
+
+            <article class="news-item">
+                <div class="news-media">
+                    <img src="images/profile/tree.jpeg" class="news-image" alt="">
+                    <div class="news-meta">
+                        <time class="news-date">2025/03/12</time>
+                        <span class="news-category">公益志愿</span>
+                    </div>
+                </div>
+                <div class="news-content">
+                    <h2 class="news-title">绿色行动，无声守护</h2>
+                    <p class="news-desc">植树节特别活动：快来一起种棵树吧~</p>
+                </div>
+            </article>
+
+            <article class="news-item">
+                <div class="news-media"></div>
+                <div class="news-content">
+                    <h2>更多精彩活动，持续更新中……</h2>
+                </div>
+
+            </article>
+        </div>
+    </div>
+
+
+    <hr class="dashed">
+
+    <footer class="py-8 px-4 md:px-8 text-center fade-in" style='animation-delay:1.2s'>
+        <div class="flex flex-col items-center">
+            <div class="mb-4 text-lg font-medium">作者: 赵一芬 徐媛铃 李思妍</div>
+            <p class="text-sm opacity-70">© 2025 SignLink手语通. 保留所有权利.
+        </div>
+    </footer>
+
+
+    <script>
+
+        function showContent(contentId) {
+            // 隐藏所有内容
+            document.querySelectorAll('.content-container').forEach(item => {
+                item.style.display = 'none';
+            });
+
+            // 显示指定内容
+            document.getElementById(contentId).style.display = 'block';
+        }
+
+        function initMap() {
+            const map = new AMap.Map('container', {
+                zoom: 13,
+                center: [121.4737, 31.2304]
+            });
+
+            // 添加交通态势图层
+            AMap.plugin('AMap.TileLayer.Traffic', () => {
+                map.add(new AMap.TileLayer.Traffic());
+            });
+
+            // 添加无障碍设施标记
+            const markers = [
+                { position: [121.4752, 31.2315], title: '手语服务台' },
+                { position: [121.4478, 31.2231], title: '无障碍电梯' }
+            ];
+
+            markers.forEach(m => {
+                new AMap.Marker({
+                    map: map,
+                    position: m.position,
+                    content: `<div class="access-marker">${m.title}</div>`
+                });
+            });
+        }
+        // 分类筛选功能
+        document.querySelectorAll('.category-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // 移除所有激活状态
+                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // 获取分类
+                const category = this.dataset.category;
+                const goods = document.querySelectorAll('.goods-card');
+
+                goods.forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // 搜索功能
+        document.querySelector('.search-btn').addEventListener('click', () => {
+            const keyword = document.querySelector('.search-input').value.toLowerCase();
+            document.querySelectorAll('.job-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(keyword) ? 'block' : 'none';
+            });
+        });
+
+
+    </script>
+
+</body>
+
+</html>

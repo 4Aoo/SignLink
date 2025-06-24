@@ -1,0 +1,238 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手语通SignLink - 注册</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(180deg, #d3c8e8 0%, #b762bf 100%);
+            display: flex;
+            justify-content: center;
+            /* 修改为居中布局 */
+            align-items: center;
+            position: relative;
+        }
+
+        .brand-title {
+            position: absolute;
+            top: 3%;
+            left: 15%;
+            transform: translateX(-50%);
+            font-family: 'Pacifico', cursive;
+            font-size: 4.8rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        .brand-title span:first-child {
+            color: #8a4fff;
+        }
+
+        .brand-title span:last-child {
+            color: #ffffff;
+            text-shadow:
+                -1px -1px 0 #8a4fff,
+                1px -1px 0 #cb6dea,
+                -1px 1px 0 #811e93,
+                1px 1px 0 #77639e;
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.97);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            width: 450px;
+            backdrop-filter: blur(5px);
+            margin-top: 80px;
+            /* 为品牌标题留出空间 */
+        }
+
+        h1 {
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: #bf6bd0;
+            box-shadow: 0 0 8px rgba(138, 79, 255, 0.2);
+        }
+
+        .password-requirements {
+            color: #666;
+            font-size: 12px;
+            margin: 10px 0;
+            padding-left: 10px;
+        }
+
+        .terms {
+            margin: 15px 0;
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+
+        .terms input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .terms a {
+            color: #8a4fff;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .errorlist {
+            color: #dc3545;
+            list-style: none;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #b952d5, #b84ebe);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .brand-title {
+                font-size: 2.5rem;
+                top: 5%;
+            }
+
+            .register-container {
+                width: 90%;
+                margin: 80px 5% 0;
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-title {
+                font-size: 2rem;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="password"] {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+
+            button[type="submit"] {
+                padding: 12px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="brand-title">
+        <span>Sign</span><span>Link</span>
+    </div>
+
+    <div class="register-container">
+        <h1>加入 SignLink 社区</h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- 用户名 -->
+            <div class="form-group">
+                {{ form.username }}
+                {% for error in form.username.errors %}
+                <div class="errorlist">{{ error }}</div>
+                {% endfor %}
+                <div class="hint-text">(4-16位字符)</div>
+            </div>
+
+            <!-- 邮箱 -->
+            <div class="form-group">
+                {{ form.email }}
+                {% for error in form.email.errors %}
+                <div class="errorlist">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- 密码 -->
+            <div class="form-group">
+                {{ form.password }}
+                {% for error in form.password.errors %}
+                <div class="errorlist">{{ error }}</div>
+                {% endfor %}
+                <div class="password-requirements">✓ 密码必须为至少8位的字母和数字组合</div>
+            </div>
+
+            <!-- 确认密码 -->
+            <div class="form-group">
+                {{ form.password_confirm }}
+                {% for error in form.password_confirm.errors %}
+                <div class="errorlist">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <!-- 同意条款 -->
+            <div class="terms">
+                {{ form.agreed_terms }}
+                <label for="{{ form.agreed_terms.id_for_label }}">我已阅读并同意 <a href="#">服务条款</a></label>
+                {% for error in form.agreed_terms.errors %}
+                <div class="errorlist">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <button type="submit">创建账号</button>
+        </form>
+    </div>
+</body>
+
+</html>
